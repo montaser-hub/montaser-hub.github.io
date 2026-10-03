@@ -6,17 +6,18 @@
  *
  * The README is a handful of animated SVGs generated here and committed with
  * it: no third-party badge, stats or typing services, which break or get
- * rate-limited on profile pages. It deliberately leaves out what GitHub
- * already shows beside it (the contribution graph and the repository list).
+ * rate-limited on profile pages. Every figure in them is read from the site's
+ * data or from GitHub when this runs, so re-running it brings them up to date.
  */
-import { execFileSync } from "node:child_process";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { caseStudies, copy, experience, focusAreas, metrics as siteMetrics, profile } from "../lib/data.ts";
+import { caseStudies, contacts, copy, experience, focusAreas, metrics as siteMetrics, profile } from "../lib/data.ts";
+import type { ContactLink } from "../lib/types.ts";
 import { EXCLUDED_REPOS, OVERRIDES, SELECTED_REPOS } from "../lib/project-catalog.ts";
-import { monthlyChart, weekdayChart, type DayCount } from "./profile/analytics.ts";
+import { donutChart, hoursChart, statsCard, summaryCard } from "./profile/analytics.ts";
 import { button, type ContactIcon } from "./profile/button.ts";
 import { footer } from "./profile/footer.ts";
+import { readGitHub } from "./profile/github.ts";
 import { header } from "./profile/header.ts";
 import { metrics } from "./profile/metrics.ts";
 import { now } from "./profile/now.ts";
@@ -37,43 +38,25 @@ const STACK = [
   "Jest", "Vitest", "Jasmine", "Docker", "Nx",
 ];
 
+const login = profile.github.split("/").pop()!;
+
 const HEIGHT_PAIR = 424; // the "now" window and the radar sit side by side
 
-/** Repositories left out of the radar: client work I was asked not to show, and this profile itself. */
+/** Repositories left out of the radar and the language and commit figures: client work I was asked not to show, and this profile itself. */
 const NOT_PROJECTS = new Set(["RealState", "montaser-hub"]);
-
-/** Daily contribution counts for the last year (needs the gh CLI). */
-function contributions(): DayCount[] | undefined {
-  const login = profile.github.split("/").pop();
-  const query = `{ user(login: "${login}") { contributionsCollection { contributionCalendar {
-    weeks { contributionDays { date contributionCount } } } } } }`;
-  try {
-    const out = execFileSync("gh", ["api", "graphql", "-f", `query=${query}`], { encoding: "utf8" });
-    const weeks: { contributionDays: { date: string; contributionCount: number }[] }[] =
-      JSON.parse(out).data.user.contributionsCollection.contributionCalendar.weeks;
-    return weeks.flatMap((week) => week.contributionDays.map((day) => ({ date: day.date, count: day.contributionCount })));
-  } catch {
-    console.warn("Skipping the analytics charts: could not read contributions with `gh`.");
-    return undefined;
-  }
-}
 
 const write = (name: string, content: string) => writeFileSync(path.join(ASSETS, name), content);
 
-/** Contact cards under the hero: where each leads and the line shown under its name. */
+/** Contact links under the hero: the portfolio first, then the site's contact list (GitHub itself is where this is shown). */
+const CONTACT_ICONS: Partial<Record<ContactLink["kind"], ContactIcon>> = { linkedin: "linkedin", email: "mail", whatsapp: "whatsapp" };
 const CONTACTS: { label: string; detail: string; href: string; file: string; icon: ContactIcon }[] = [
   ...(profile.site
     ? [{ label: "Portfolio", detail: profile.site.replace(/^https?:\/\//, ""), href: profile.site, file: "contact-portfolio.svg", icon: "globe" as const }]
     : []),
-  {
-    label: "LinkedIn",
-    detail: profile.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\//, "").replace(/\/$/, ""),
-    href: profile.linkedin,
-    file: "contact-linkedin.svg",
-    icon: "linkedin",
-  },
-  { label: "Email", detail: profile.email, href: `mailto:${profile.email}`, file: "contact-email.svg", icon: "mail" },
-  { label: "WhatsApp", detail: profile.phoneDisplay, href: profile.whatsapp, file: "contact-whatsapp.svg", icon: "whatsapp" },
+  ...contacts.flatMap(({ kind, label, detail, href }) => {
+    const icon = CONTACT_ICONS[kind];
+    return icon ? [{ label, detail, href, file: `contact-${kind}.svg`, icon }] : [];
+  }),
 ];
 
 async function build(): Promise<void> {
@@ -112,17 +95,20 @@ async function build(): Promise<void> {
   );
   // Private projects are the case studies without a public repository link.
   const privateStacks = caseStudies.filter((study) => !study.links).map((study) => study.tech);
-  const coverage = measureCoverage(profile.github.split("/").pop()!, NOT_PROJECTS, privateStacks);
+  const coverage = measureCoverage(login, NOT_PROJECTS, privateStacks);
   if (coverage) {
     write(
       "radar.svg",
       radar(coverage.axes, coverage.total, HEIGHT_PAIR, `Measured from ${coverage.repositories} repositories and ${coverage.privateProjects} private projects`)
     );
   }
-  const days = contributions();
-  if (days) {
-    write("analytics-months.svg", monthlyChart(days));
-    write("analytics-weekdays.svg", weekdayChart(days));
+  const github = readGitHub(login, NOT_PROJECTS, profile.timeZone);
+  if (github) {
+    write("analytics-summary.svg", summaryCard(profile.name, github));
+    write("analytics-languages-repos.svg", donutChart("Languages by repository", "Main language of each public repository", github.languagesByRepo, "repositories"));
+    write("analytics-hours.svg", hoursChart(github.commitHours, profile.timeZone.split("/").pop()!.replace(/_/g, " "), github.commitsRead));
+    write("analytics-totals.svg", statsCard(github));
+    write("analytics-languages-commits.svg", donutChart("Languages by commit", "My commits, by each repository's main language", github.languagesByCommit, "commits"));
   }
   write("footer.svg", footer(copy.contact.title, `${profile.email}  ·  ${profile.location}`));
   write("stack.svg", stack(STACK));
@@ -140,14 +126,16 @@ async function build(): Promise<void> {
   );
 
   // A failed GitHub lookup would silently drop sections: refuse to write a partial profile.
-  if (!coverage || !days) throw new Error("GitHub data unavailable (see warnings above); profile not written.");
+  if (!coverage || !github) throw new Error("GitHub data unavailable (see warnings above); profile not written.");
 
   const image = (file: string, alt: string, width: string) => `<img src="assets/${file}" alt="${alt.replace(/"/g, "&quot;")}" width="${width}">`;
+  const number = (value: number) => value.toLocaleString("en-US");
+  const shares = (list: { label: string; count: number }[]) => list.map((share) => `${share.label} ${share.count}`).join(", ");
   const pair = (left: string, right: string) => `<p>\n  ${left}\n  ${right}\n</p>`;
   const readme = `<a href="${profile.site}">${image("header.svg", `${profile.name}, ${profile.title}. ${copy.hero.headlineLead} ${copy.hero.headlinePhrases[0]}`, "100%")}</a>
 
 <p>
-${CONTACTS.map((item) => `  <a href="${item.href}">${image(item.file, `${item.label}: ${item.detail}`, "24.4%")}</a>`).join("\n")}
+${CONTACTS.map((item) => `  <a href="${item.href}">${image(item.file, `${item.label}: ${item.detail}`, `${(97.6 / CONTACTS.length).toFixed(1)}%`)}</a>`).join("\n")}
 </p>
 
 ${image("metrics.svg", siteMetrics.map((m) => `${m.value.toLocaleString("en-US")}${m.suffix ?? ""} ${m.label}`).join(", "), "100%")}
@@ -164,7 +152,21 @@ ${
 }
 
 <a href="${profile.site}">${image("portfolio.svg", `Portfolio: ${caseStudies.length} case studies, ${SELECTED_REPOS.length} projects and ${demos} live demos at ${profile.site}`, "100%")}</a>
-${days ? `\n### Activity\n\n${pair(image("analytics-months.svg", "Contributions per month over the last year", "49.5%"), image("analytics-weekdays.svg", "Contributions by day of the week", "49.5%"))}\n` : ""}
+
+### GitHub analytics
+
+${image("analytics-summary.svg", `${number(github.contributions)} contributions in the last year, ${github.publicRepos} public repositories`, "100%")}
+
+${pair(
+  image("analytics-languages-repos.svg", `Languages by repository: ${shares(github.languagesByRepo)}`, "49.5%"),
+  image("analytics-hours.svg", `Commits per hour of the day, ${profile.timeZone} time`, "49.5%")
+)}
+
+${pair(
+  image("analytics-totals.svg", `${number(github.commitsLastYear)} commits in the last year, ${number(github.pullRequests)} pull requests, ${number(github.issues)} issues`, "49.5%"),
+  image("analytics-languages-commits.svg", `Languages by commit: ${shares(github.languagesByCommit)}`, "49.5%")
+)}
+
 <a href="mailto:${profile.email}">${image("footer.svg", `${copy.contact.title}: ${profile.email}`, "100%")}</a>
 `;
   writeFileSync(path.join(OUT, "README.md"), readme);

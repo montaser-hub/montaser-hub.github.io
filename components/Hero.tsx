@@ -35,6 +35,7 @@ export default function Hero() {
       <motion.div style={{ scale: globeScale, opacity: globeOpacity }} className="absolute inset-0">
         <ConnectGlobe />
       </motion.div>
+
       {/* Keeps the text readable where it overlaps the globe. */}
       <div
         aria-hidden="true"
@@ -48,16 +49,9 @@ export default function Hero() {
         style={{ y: textY, opacity: textOpacity }}
         className="relative z-10 max-w-2xl"
       >
-        <motion.p
-          variants={line}
-          className="inline-flex items-center gap-2.5 rounded-full border border-border bg-surface/70 px-3.5 py-1.5 font-mono text-xs text-muted backdrop-blur"
-        >
-          <span className="status-dot" aria-hidden="true" />
-          {copy.hero.eyebrow}
-        </motion.p>
         <motion.h2
           variants={line}
-          className="text-gradient-hero mt-6 pb-1 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
+          className="text-gradient-hero text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
         >
           {profile.name}
         </motion.h2>

@@ -10,6 +10,16 @@ import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import Spotlight from "@/components/Spotlight";
 import BackToTop from "@/components/BackToTop";
+import { sections, type SectionId } from "@/lib/sections";
+
+/** What renders each section listed in lib/sections.ts; the page follows that list's order. */
+const SECTION_VIEWS: Record<SectionId, React.ComponentType> = {
+  about: About,
+  experience: Experience,
+  work: FeaturedProject,
+  projects: Projects,
+  contact: Contact,
+};
 
 export default function Home() {
   return (
@@ -27,11 +37,10 @@ export default function Home() {
       <main id="content" className="px-6 sm:px-10 lg:ml-64 lg:px-12 xl:ml-72 xl:px-16">
         <MobileNav />
         <Hero />
-        <About />
-        <Experience />
-        <FeaturedProject />
-        <Projects />
-        <Contact />
+        {sections.map(({ id }) => {
+          const View = SECTION_VIEWS[id];
+          return <View key={id} />;
+        })}
         <Footer />
       </main>
     </div>

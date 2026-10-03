@@ -1,117 +1,40 @@
-import { existsSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import path from "node:path";
 import type { Project } from "./types";
-import { profile } from "./data";
-import { EXCLUDED_REPOS, OVERRIDES, SELECTED_REPOS } from "./project-catalog";
-
-const GITHUB_USER = profile.github.split("/").pop()!;
+import { REPOS_URL, catalogProjects, toProjects, type GitHubRepo, type ProjectImages } from "./project-mapper";
 
 const PROJECT_IMAGES_DIR = path.join(process.cwd(), "public", "projects");
-const IMAGE_EXTENSIONS = ["webp", "png", "jpg", "jpeg"];
+// Later entries win, so a .webp is preferred when a repo has several files.
+const IMAGE_EXTENSIONS = ["jpeg", "jpg", "png", "webp"];
 
 /**
- * Looks up `public/projects/<repo-name>.<ext>` for a given repo. Dropping a
- * screenshot in with the exact repo slug as the filename is enough to make
- * it appear on hover — no code changes needed.
+ * Every screenshot in `public/projects/`, keyed by file name without the
+ * extension. Dropping in a file named after a repo (lower-case) is enough to
+ * make its card flip to it: no code changes needed.
  */
-function findProjectImage(repoName: string): string | undefined {
-  const slug = repoName.toLowerCase();
+export function getProjectImages(): ProjectImages {
+  const files = readdirSync(PROJECT_IMAGES_DIR);
+  const images: ProjectImages = {};
   for (const ext of IMAGE_EXTENSIONS) {
-    const file = `${slug}.${ext}`;
-    if (existsSync(path.join(PROJECT_IMAGES_DIR, file))) {
-      return `/projects/${file}`;
+    for (const file of files.filter((name) => name.endsWith(`.${ext}`))) {
+      images[file.slice(0, -ext.length - 1)] = `/projects/${file}`;
     }
   }
-  return undefined;
+  return images;
 }
 
-interface GitHubRepo {
-  name: string;
-  description: string | null;
-  html_url: string;
-  homepage: string | null;
-  language: string | null;
-  fork: boolean;
-  archived: boolean;
-  pushed_at: string;
-}
-
-function tierOf(repoName: string): Project["tier"] {
-  return SELECTED_REPOS.includes(repoName) ? "selected" : "lab";
-}
-
-/** Selected projects in SELECTED_REPOS order; labs keep their incoming order. */
-function bySelectedOrder(entries: [repoName: string, project: Project][]): Project[] {
-  const rank = (name: string) => {
-    const i = SELECTED_REPOS.indexOf(name);
-    return i === -1 ? SELECTED_REPOS.length : i;
-  };
-  return entries
-    .map((entry, i) => ({ entry, i }))
-    .sort((a, b) => rank(a.entry[0]) - rank(b.entry[0]) || a.i - b.i)
-    .map(({ entry }) => entry[1]);
-}
-
-function humanize(name: string): string {
-  return name
-    .replace(/[-_]+/g, " ")
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-/** Curated fallback used only if the GitHub API is unreachable at build time. */
-const FALLBACK_PROJECTS: Project[] = bySelectedOrder(
-  Object.entries(OVERRIDES)
-    .filter(([name]) => !EXCLUDED_REPOS.has(name))
-    .map(([name, override]): [string, Project] => [name, {
-      name: override.name ?? humanize(name),
-      description: override.description ?? "",
-      tech: override.tech ?? [],
-      href: `${profile.github}/${name}`,
-      note: override.note,
-      demo: override.demo,
-      image: override.image ?? findProjectImage(name),
-      tier: tierOf(name),
-    }])
-);
-
+/** The project list as of this build. The browser refreshes it on each visit (hooks/useLiveProjects.ts). */
 export async function getProjects(): Promise<Project[]> {
+  const images = getProjectImages();
   try {
-    const res = await fetch(
-      `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`,
-      {
-        headers: { Accept: "application/vnd.github+json" },
-        // Fetched once per build: the repo list refreshes on each deploy.
-        cache: "force-cache",
-      }
-    );
-
+    const res = await fetch(REPOS_URL, {
+      headers: { Accept: "application/vnd.github+json" },
+      cache: "force-cache", // once per build
+    });
     if (!res.ok) throw new Error(`GitHub API responded ${res.status}`);
     const repos: GitHubRepo[] = await res.json();
-
-    const fromGitHub = repos
-      .filter((repo) => !repo.fork && !repo.archived && !EXCLUDED_REPOS.has(repo.name))
-      .map((repo): [string, Project] => {
-        const override = OVERRIDES[repo.name] ?? {};
-        return [repo.name, {
-          name: override.name ?? humanize(repo.name),
-          description:
-            override.description ??
-            repo.description ??
-            (repo.language ? `A ${repo.language} project.` : "A project by " + profile.name + "."),
-          tech: override.tech ?? (repo.language ? [repo.language] : []),
-          href: repo.html_url,
-          note: override.note,
-          demo: override.demo ?? (repo.homepage || undefined),
-          image: override.image ?? findProjectImage(repo.name),
-          tier: tierOf(repo.name),
-        }];
-      });
-
-    return bySelectedOrder(fromGitHub);
+    return toProjects(repos, images);
   } catch {
-    return FALLBACK_PROJECTS;
+    return catalogProjects(images);
   }
 }

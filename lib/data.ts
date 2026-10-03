@@ -7,6 +7,8 @@ import type {
   CaseStudy,
   SiteCopy,
   Metric,
+  ContactLink,
+  Place,
 } from "./types";
 
 export const profile: Profile = {
@@ -15,6 +17,7 @@ export const profile: Profile = {
   tagline:
     "Full-stack engineer building enterprise platforms — metadata-driven React UIs and Node.js/NestJS services that hold up at 100K+ records.",
   location: "Egypt",
+  timeZone: "Africa/Cairo",
   email: "montaserismail20@gmail.com",
   phoneDisplay: "+20 109 288 9329",
   whatsapp: "https://wa.me/201092889329",
@@ -23,6 +26,35 @@ export const profile: Profile = {
   site: "https://montaser-hub.github.io",
   availability: "Open to full-stack roles",
 };
+
+/** Contact links, in the order they are shown on the site and on my GitHub profile. */
+export const contacts: ContactLink[] = [
+  { kind: "github", label: "GitHub", href: profile.github, detail: profile.github.replace(/^https?:\/\//, "") },
+  {
+    kind: "linkedin",
+    label: "LinkedIn",
+    href: profile.linkedin,
+    detail: profile.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\//, "").replace(/\/$/, ""),
+  },
+  { kind: "email", label: "Email", href: `mailto:${profile.email}`, detail: profile.email },
+  { kind: "whatsapp", label: "WhatsApp", href: profile.whatsapp, detail: profile.phoneDisplay },
+];
+
+/**
+ * Places pinned on the hero globe. Only real ones: the globe turns to face
+ * the first and shows each pin's label. Add a line to pin another place.
+ */
+export const places: Place[] = [{ id: "home", label: "Cairo, Egypt", location: [30.0444, 31.2357] }];
+
+/** Names written on the globe itself, map-style, so it reads as a map when dragged around. */
+export const regions: Place[] = [
+  { id: "africa", label: "Africa", location: [4, 21] },
+  { id: "europe", label: "Europe", location: [50, 15] },
+  { id: "asia", label: "Asia", location: [45, 90] },
+  { id: "north-america", label: "North America", location: [45, -100] },
+  { id: "south-america", label: "South America", location: [-12, -58] },
+  { id: "australia", label: "Australia", location: [-25, 134] },
+];
 
 export const copy: SiteCopy = {
   hero: {
@@ -46,6 +78,8 @@ export const copy: SiteCopy = {
     title: "Let's build something",
     body: "Open to full-stack roles and freelance projects. I usually reply within a day.",
     cta: "Say hello",
+    copyEmail: "Copy email",
+    copied: "Copied",
   },
   footer: "Designed & built by Montaser Ismail",
   metaDescription:

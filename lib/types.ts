@@ -3,6 +3,8 @@ export interface Profile {
   title: string;
   tagline: string;
   location: string;
+  /** IANA time zone I work in, used for the commit-hours chart on my GitHub profile. */
+  timeZone: string;
   email: string;
   phoneDisplay: string;
   whatsapp: string;
@@ -12,6 +14,24 @@ export interface Profile {
   site?: string;
   /** One line on what I'm open to, shown on my GitHub profile. */
   availability: string;
+}
+
+/** A way to reach me. `kind` picks the icon; the site and the GitHub profile both list these. */
+export interface ContactLink {
+  kind: "github" | "linkedin" | "whatsapp" | "email";
+  label: string;
+  href: string;
+  /** Short readable form of the address, shown under the label on the GitHub profile. */
+  detail: string;
+}
+
+/** A real place on the hero globe: a pin with a label, or (in `regions`) a name written on the map. */
+export interface Place {
+  /** Short lower-case id, unique across places and regions (letters, digits and dashes). */
+  id: string;
+  label: string;
+  /** [latitude, longitude] in degrees. */
+  location: [number, number];
 }
 
 /** Page copy that isn't a list of records: hero, about and contact text. */
@@ -25,7 +45,7 @@ export interface SiteCopy {
     secondaryCta: string;
   };
   about: string[];
-  contact: { eyebrow: string; title: string; body: string; cta: string };
+  contact: { eyebrow: string; title: string; body: string; cta: string; copyEmail: string; copied: string };
   footer: string;
   metaDescription: string;
 }
