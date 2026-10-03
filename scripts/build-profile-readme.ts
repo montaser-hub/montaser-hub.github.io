@@ -11,8 +11,9 @@
  * calendar through the GitHub CLI (`gh`), so re-run this to refresh it.
  */
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import sharp from "sharp";
 import { caseStudies, copy, profile, techStack } from "../lib/data.ts";
 import { OVERRIDES, SELECTED_REPOS } from "../lib/project-catalog.ts";
 import type { CaseStudy } from "../lib/types.ts";
@@ -223,13 +224,22 @@ function activityGraph({ total, weeks }: Activity): string {
 `;
 }
 
-/** Copies a site screenshot into the profile repo and returns its relative path. */
+/** Path of a site screenshot's copy in the profile repo, if the screenshot exists. */
 function asset(sitePath: string): string | undefined {
-  const source = path.join(ROOT, "public", sitePath);
-  if (!existsSync(source)) return undefined;
-  const name = path.basename(sitePath);
-  copyFileSync(source, path.join(ASSETS, name));
-  return `assets/${name}`;
+  return existsSync(path.join(ROOT, "public", sitePath)) ? `assets/${path.basename(sitePath)}` : undefined;
+}
+
+/** Copies the case-study screenshots, cropped to one shape so the grid rows line up. */
+async function writeScreenshots(): Promise<void> {
+  const images = caseStudies.flatMap((study) => (study.image && asset(study.image) ? [study.image] : []));
+  await Promise.all(
+    images.map((sitePath) =>
+      sharp(path.join(ROOT, "public", sitePath))
+        .resize(960, 600, { fit: "cover", position: "top" })
+        .webp({ quality: 82 })
+        .toFile(path.join(ASSETS, path.basename(sitePath)))
+    )
+  );
 }
 
 const links = (items: { label: string; href: string }[]) =>
@@ -293,5 +303,6 @@ mkdirSync(ASSETS, { recursive: true });
 writeFileSync(path.join(ASSETS, "banner.svg"), banner());
 const activity = fetchActivity();
 if (activity) writeFileSync(path.join(ASSETS, "activity.svg"), activityGraph(activity));
+await writeScreenshots();
 writeFileSync(path.join(OUT, "README.md"), readme(Boolean(activity)));
 console.log(`Wrote ${path.relative(ROOT, OUT)}/README.md and assets.`);
