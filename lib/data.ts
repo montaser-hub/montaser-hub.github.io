@@ -210,7 +210,7 @@ export const caseStudies: CaseStudy[] = [
       { value: "168", label: "API endpoints" },
       { value: "18 months", label: "on the product" },
     ],
-    tech: ["Node.js", "Express", "MongoDB", "Redis", "BullMQ", "Docker"],
+    tech: ["Node.js", "Express", "MongoDB", "Redis", "BullMQ", "Docker", "Jasmine"],
     note: "Source private",
     image: "/projects/qyser.webp",
     imageCaption: "The web app my API serves (UI by the front-end team), running on demo data.",

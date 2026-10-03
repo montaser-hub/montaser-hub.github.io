@@ -21,6 +21,7 @@ import { header } from "./profile/header.ts";
 import { metrics } from "./profile/metrics.ts";
 import { now } from "./profile/now.ts";
 import { portfolio } from "./profile/portfolio.ts";
+import { measureCoverage } from "./profile/coverage.ts";
 import { radar } from "./profile/radar.ts";
 import { stack } from "./profile/stack.ts";
 
@@ -36,30 +37,10 @@ const STACK = [
   "Jest", "Vitest", "Jasmine", "Docker", "Nx",
 ];
 
-/** Which technologies count towards each radar axis. */
-const AREAS: Record<string, string[]> = {
-  Frontend: ["React", "Angular", "Next.js", "Redux Toolkit", "Tailwind CSS", "Vite", "JavaScript", "HTML", "CSS", "Bootstrap", "Material UI", "RxJS", "EJS", "Pug"],
-  "Backend & APIs": ["Node.js", "NestJS", "Express", "GraphQL"],
-  Databases: ["MongoDB", "PostgreSQL", "MySQL", "Prisma", "ER Modeling"],
-  "Real-time & queues": ["Socket.io", "Redis", "BullMQ"],
-  Testing: ["Jest", "Vitest"],
-  "Containers & tooling": ["Docker", "Nx"],
-};
-
 const HEIGHT_PAIR = 424; // the "now" window and the radar sit side by side
 
-/** How many projects (case studies and listed repos) use at least one technology of each area. */
-function projectsPerArea(): { axes: { label: string; count: number }[]; total: number } {
-  const stacks = [
-    ...caseStudies.map((study) => study.tech),
-    ...Object.entries(OVERRIDES).filter(([repo]) => !EXCLUDED_REPOS.has(repo)).map(([, project]) => project.tech ?? []),
-  ];
-  const axes = Object.entries(AREAS).map(([label, techs]) => ({
-    label,
-    count: stacks.filter((stack) => stack.some((tech) => techs.includes(tech))).length,
-  }));
-  return { axes, total: stacks.length };
-}
+/** Repositories left out of the radar: client work I was asked not to show, and this profile itself. */
+const NOT_PROJECTS = new Set(["RealState", "montaser-hub"]);
 
 /** Daily contribution counts for the last year (needs the gh CLI). */
 function contributions(): DayCount[] | undefined {
@@ -129,8 +110,15 @@ async function build(): Promise<void> {
       HEIGHT_PAIR
     )
   );
-  const coverage = projectsPerArea();
-  write("radar.svg", radar(coverage.axes, coverage.total, HEIGHT_PAIR));
+  // Private projects are the case studies without a public repository link.
+  const privateStacks = caseStudies.filter((study) => !study.links).map((study) => study.tech);
+  const coverage = measureCoverage(profile.github.split("/").pop()!, NOT_PROJECTS, privateStacks);
+  if (coverage) {
+    write(
+      "radar.svg",
+      radar(coverage.axes, coverage.total, HEIGHT_PAIR, `Measured from ${coverage.repositories} repositories and ${coverage.privateProjects} private projects`)
+    );
+  }
   const days = contributions();
   if (days) {
     write("analytics-months.svg", monthlyChart(days));
@@ -147,8 +135,12 @@ async function build(): Promise<void> {
       title: "See the work in detail",
       facts: [`${caseStudies.length} case studies`, `${SELECTED_REPOS.length} projects`, `${demos} live demos`],
       address: profile.site?.replace(/^https?:\/\//, "") ?? "",
+      projects: caseStudies.map((study) => ({ name: study.name, line: study.role })),
     })
   );
+
+  // A failed GitHub lookup would silently drop sections: refuse to write a partial profile.
+  if (!coverage || !days) throw new Error("GitHub data unavailable (see warnings above); profile not written.");
 
   const image = (file: string, alt: string, width: string) => `<img src="assets/${file}" alt="${alt.replace(/"/g, "&quot;")}" width="${width}">`;
   const pair = (left: string, right: string) => `<p>\n  ${left}\n  ${right}\n</p>`;
@@ -162,10 +154,14 @@ ${image("metrics.svg", siteMetrics.map((m) => `${m.value.toLocaleString("en-US")
 
 ${image("stack.svg", `Tech stack: ${STACK.join(", ")}`, "100%")}
 
-${pair(
-  image("now.svg", `What I do now: ${current.role} at ${current.company}`, "49.5%"),
-  image("radar.svg", `Projects per area: ${coverage.axes.map((axis) => `${axis.label} ${axis.count}`).join(", ")}`, "49.5%")
-)}
+${
+  coverage
+    ? pair(
+        image("now.svg", `What I do now: ${current.role} at ${current.company}`, "49.5%"),
+        image("radar.svg", `Projects per area: ${coverage.axes.map((axis) => `${axis.label} ${axis.count}`).join(", ")}`, "49.5%")
+      )
+    : image("now.svg", `What I do now: ${current.role} at ${current.company}`, "49.5%")
+}
 
 <a href="${profile.site}">${image("portfolio.svg", `Portfolio: ${caseStudies.length} case studies, ${SELECTED_REPOS.length} projects and ${demos} live demos at ${profile.site}`, "100%")}</a>
 ${days ? `\n### Activity\n\n${pair(image("analytics-months.svg", "Contributions per month over the last year", "49.5%"), image("analytics-weekdays.svg", "Contributions by day of the week", "49.5%"))}\n` : ""}

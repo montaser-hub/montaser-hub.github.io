@@ -11,7 +11,7 @@ export interface RadarAxis {
   count: number;
 }
 
-export function radar(axes: RadarAxis[], total: number, height: number): string {
+export function radar(axes: RadarAxis[], total: number, height: number, source: string): string {
   const cx = WIDTH / 2;
   const cy = height / 2 + 30;
   const radius = Math.min(WIDTH, height) / 2 - 86;
@@ -45,7 +45,7 @@ export function radar(axes: RadarAxis[], total: number, height: number): string 
   return svg(WIDTH, height, `Projects per area: ${axes.map((axis) => `${axis.label} ${axis.count} of ${total}`).join(", ")}`, `  ${styles(css)}
   <rect class="panel edge" x="0.5" y="0.5" width="${WIDTH - 1}" height="${height - 1}" rx="16" stroke-width="1"/>
   <text class="fg" x="24" y="38" font-size="18" font-weight="700">Where my projects sit</text>
-  <text class="dim" x="24" y="58" font-size="12.5">Projects touching each area, out of ${total}</text>
+  <text class="dim" x="24" y="58" font-size="12.5">${escapeXml(source)}</text>
   ${rings}${spokes}
   <g class="shape">
     <polygon points="${polygon((i) => (radius * axes[i].count) / max)}" class="accent accent-line" fill-opacity="0.2" stroke-width="2" stroke-linejoin="round"/>

@@ -1,14 +1,17 @@
 /**
- * Hero illustration: a flat cartoon of me (dark hair, full beard, dark shirt)
+ * Hero illustration: a flat cartoon of me (dark swept-up hair, dark shirt)
  * facing the viewer behind a laptop. A code panel types itself on one side, a
  * page wireframe builds on the other, the eyes glance between them and blink,
  * the arms tap, and steam rises from a cup. No background of its own.
  *
  * Drawn in a 420×300 box whose top-left corner is (x, y).
  */
+import { CHIN_Y, FACE_CENTRE_X, FACE_OPENING, FACE_WIDTH, HAIR_BOTTOM, HEAD_OUTLINE } from "./hair.ts";
 import { EASE } from "./theme.ts";
 
 const CYCLE = 10; // seconds for the panels to fill, hold and clear
+const FACE_PX = 74; // width of the face in the drawing
+const scale = FACE_PX / FACE_WIDTH;
 
 /** Line widths (percent of the panel) for the code panel, top to bottom. */
 const CODE = [34, 62, 48, 70, 40, 56, 28, 64, 44, 30];
@@ -37,9 +40,9 @@ export function programmer(x: number, y: number): { css: string; body: string } 
     .join("\n    ");
 
   const css = `
-    .skin { fill: #e3b08a; } .skin-dark { stroke: #c08a63; } .hair { fill: #17181c; } .hair-line { stroke: #17181c; }
+    .skin { fill: #e3b08a; } .skin-dark { stroke: #c08a63; } .hair { fill: #2b2e38; } .hair-line { stroke: #2b2e38; }
     .shirt { fill: #3a4354; } .shirt-line { stroke: #3a4354; } .collar { fill: #2d3544; } .lid { fill: #1c2230; } .cup { fill: #c9d1d9; }
-    @media (prefers-color-scheme: light) { .shirt { fill: #2f3744; } .shirt-line { stroke: #2f3744; } .collar { fill: #222933; } .lid { fill: #2b3340; } .cup { fill: #8c959f; } }
+    @media (prefers-color-scheme: light) { .hair { fill: #17181c; } .hair-line { stroke: #17181c; } .shirt { fill: #2f3744; } .shirt-line { stroke: #2f3744; } .collar { fill: #222933; } .lid { fill: #2b3340; } .cup { fill: #8c959f; } }
     .float-a { animation: float 6s ease-in-out infinite; }
     .float-b { animation: float 7s ease-in-out -2s infinite; }
     .type { transform-box: fill-box; transform-origin: left; animation: type ${CYCLE}s ${EASE} infinite backwards; }
@@ -86,12 +89,13 @@ export function programmer(x: number, y: number): { css: string; body: string } 
     <g class="head">
       <ellipse class="skin" cx="${cx - 39}" cy="${desk - 148}" rx="6" ry="10"/>
       <ellipse class="skin" cx="${cx + 39}" cy="${desk - 148}" rx="6" ry="10"/>
-      <rect class="skin" x="${cx - 37}" y="${desk - 196}" width="74" height="90" rx="35"/>
-      <!-- beard and moustache -->
-      <path class="hair" d="M${cx - 37} ${desk - 152} C${cx - 39} ${desk - 122} ${cx - 30} ${desk - 104} ${cx} ${desk - 102} C${cx + 30} ${desk - 104} ${cx + 39} ${desk - 122} ${cx + 37} ${desk - 152} C${cx + 32} ${desk - 140} ${cx + 24} ${desk - 136} ${cx + 15} ${desk - 137} C${cx + 8} ${desk - 142} ${cx - 8} ${desk - 142} ${cx - 15} ${desk - 137} C${cx - 24} ${desk - 136} ${cx - 32} ${desk - 140} ${cx - 37} ${desk - 152} Z"/>
-      <path class="skin-dark" d="M${cx - 7} ${desk - 127} Q${cx} ${desk - 123} ${cx + 7} ${desk - 127}" fill="none" stroke-width="2.2" stroke-linecap="round"/>
-      <!-- hair -->
-      <path class="hair" d="M${cx - 39} ${desk - 158} C${cx - 44} ${desk - 194} ${cx - 24} ${desk - 210} ${cx + 2} ${desk - 210} C${cx + 28} ${desk - 210} ${cx + 45} ${desk - 192} ${cx + 39} ${desk - 158} C${cx + 36} ${desk - 174} ${cx + 26} ${desk - 182} ${cx + 4} ${desk - 180} C${cx - 18} ${desk - 182} ${cx - 34} ${desk - 174} ${cx - 39} ${desk - 158} Z"/>
+      <!-- face and hair from the chosen head icon, scaled so the face is ${FACE_PX}px wide -->
+      <g transform="translate(${(cx - FACE_CENTRE_X * scale).toFixed(2)} ${(desk - 106 - CHIN_Y * scale).toFixed(2)}) scale(${scale.toFixed(4)})">
+        <clipPath id="hair-only"><rect x="0" y="0" width="512" height="${HAIR_BOTTOM}"/></clipPath>
+        <path class="skin" d="${FACE_OPENING}"/>
+        <path class="hair" fill-rule="evenodd" clip-path="url(#hair-only)" d="${HEAD_OUTLINE} ${FACE_OPENING}"/>
+      </g>
+      <path class="skin-dark" d="M${cx - 9} ${desk - 126} Q${cx} ${desk - 119} ${cx + 9} ${desk - 126}" fill="none" stroke-width="2.4" stroke-linecap="round"/>
       <!-- brows, eyes, nose -->
       <path class="hair-line" d="M${cx - 26} ${desk - 163} L${cx - 9} ${desk - 165}" stroke-width="3.6" stroke-linecap="round"/>
       <path class="hair-line" d="M${cx + 9} ${desk - 165} L${cx + 26} ${desk - 163}" stroke-width="3.6" stroke-linecap="round"/>
@@ -99,8 +103,8 @@ export function programmer(x: number, y: number): { css: string; body: string } 
         <ellipse cx="${cx - 17}" cy="${desk - 154}" rx="7" ry="5.5" fill="#fff"/>
         <ellipse cx="${cx + 17}" cy="${desk - 154}" rx="7" ry="5.5" fill="#fff"/>
         <g class="pupil">
-          <circle class="hair" cx="${cx - 17}" cy="${desk - 154}" r="3"/>
-          <circle class="hair" cx="${cx + 17}" cy="${desk - 154}" r="3"/>
+          <circle cx="${cx - 17}" cy="${desk - 154}" r="3" fill="#15161a"/>
+          <circle cx="${cx + 17}" cy="${desk - 154}" r="3" fill="#15161a"/>
         </g>
       </g>
       <path class="skin-dark" d="M${cx} ${desk - 154} L${cx - 3} ${desk - 142} L${cx + 3} ${desk - 141}" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
