@@ -32,7 +32,7 @@ function rules(c: Palette): string {
   return `
     .bg { fill: ${c.bg}; } .panel { fill: ${c.panel}; } .edge { stroke: ${c.border}; }
     .fg { fill: ${c.fg}; } .muted { fill: ${c.muted}; } .dim { fill: ${c.dim}; }
-    .accent { fill: ${c.accent}; } .accent-line { stroke: ${c.accent}; }
+    .accent { fill: ${c.accent}; } .accent-line { stroke: ${c.accent}; } .dim-line { stroke: ${c.dim}; }
     .stop-accent { stop-color: ${c.accent}; } .stop-fg { stop-color: ${c.fg}; }`;
 }
 
