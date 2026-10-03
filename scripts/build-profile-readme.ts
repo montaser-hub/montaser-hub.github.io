@@ -147,8 +147,6 @@ async function build(): Promise<void> {
       title: "See the work in detail",
       facts: [`${caseStudies.length} case studies`, `${SELECTED_REPOS.length} projects`, `${demos} live demos`],
       address: profile.site?.replace(/^https?:\/\//, "") ?? "",
-      // The line under each name is its context, up to the first separator.
-      projects: caseStudies.map((study) => ({ name: study.name, line: study.role })),
     })
   );
 

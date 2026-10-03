@@ -1,105 +1,117 @@
 /**
- * Hero illustration: a programmer in a hoodie, seen from behind, typing at a
- * desk with two monitors. Code appears line by line on the screens, a cursor
- * blinks, the hands tap the keyboard and the screens glow softly.
+ * Hero illustration: a flat cartoon of me (dark hair, full beard, dark shirt)
+ * facing the viewer behind a laptop. A code panel types itself on one side, a
+ * page wireframe builds on the other, the eyes glance between them and blink,
+ * the arms tap, and steam rises from a cup. No background of its own.
  *
- * Drawn in a 400×300 box whose top-left corner is (x, y).
+ * Drawn in a 420×300 box whose top-left corner is (x, y).
  */
 import { EASE } from "./theme.ts";
 
-/** Lines of "code" on a screen: [indent, width, tone] in screen units. */
-type CodeLine = [indent: number, width: number, tone: "accent" | "muted" | "dim"];
+const CYCLE = 10; // seconds for the panels to fill, hold and clear
 
-const LEFT_SCREEN: CodeLine[] = [
-  [0, 46, "accent"], [8, 70, "muted"], [8, 52, "dim"], [16, 60, "muted"], [16, 38, "accent"], [8, 30, "dim"], [0, 18, "muted"],
-];
-const RIGHT_SCREEN: CodeLine[] = [
-  [0, 58, "muted"], [8, 40, "accent"], [8, 76, "dim"], [16, 48, "muted"], [8, 64, "muted"], [0, 26, "accent"], [0, 50, "dim"], [8, 34, "muted"],
-];
-
-const CYCLE = 9; // seconds for the screens to fill, hold and clear
-
-/** One monitor with its stand; the code lines type themselves in a loop. */
-function monitor(id: string, x: number, y: number, width: number, height: number, tilt: number, code: CodeLine[], delay: number, desk: number): string {
-  const lines = code
-    .map(([indent, w, tone], i) => {
-      const scaleW = (w / 100) * (width - 36);
-      return `<rect class="${tone} code code-${id}-${i}" x="${x + 18 + indent}" y="${y + 20 + i * 12}" width="${scaleW.toFixed(1)}" height="5" rx="2.5" style="animation-delay: ${(delay + i * 0.45).toFixed(2)}s"/>`;
-    })
-    .join("\n    ");
-  const last = code[code.length - 1];
-  const cursorX = x + 18 + last[0] + (last[1] / 100) * (width - 36) + 4;
-  const cx = x + width / 2;
-
-  return `<g transform="rotate(${tilt} ${cx} ${y + height})">
-    <rect class="screen-glow accent" x="${x - 14}" y="${y - 14}" width="${width + 28}" height="${height + 28}" rx="22" opacity="0.1"/>
-    <rect class="bg edge" x="${x}" y="${y}" width="${width}" height="${height}" rx="9" stroke-width="2.5"/>
-    <circle class="dim" cx="${x + 12}" cy="${y + 10}" r="2"/><circle class="dim" cx="${x + 20}" cy="${y + 10}" r="2"/><circle class="dim" cx="${x + 28}" cy="${y + 10}" r="2"/>
-    ${lines}
-    <rect class="accent blink" x="${cursorX.toFixed(1)}" y="${y + 18 + (code.length - 1) * 12}" width="5" height="9" rx="1"/>
-    <rect class="panel edge" x="${cx - 7}" y="${y + height}" width="14" height="${desk - (y + height) - 5}" stroke-width="1"/>
-    <rect class="panel edge" x="${cx - 32}" y="${desk - 7}" width="64" height="7" rx="3.5" stroke-width="1"/>
-  </g>`;
-}
+/** Line widths (percent of the panel) for the code panel, top to bottom. */
+const CODE = [34, 62, 48, 70, 40, 56, 28, 64, 44, 30];
 
 export function programmer(x: number, y: number): { css: string; body: string } {
-  const cx = x + 200; // the figure's centre line
-  const desk = y + 214; // top edge of the desk
+  const cx = x + 214;
+  const desk = y + 264;
+
+  const code = { x: x + 4, y: y + 22, width: 150, height: 150 };
+  const page = { x: x + 300, y: y + 62, width: 116, height: 104 };
+
+  const codeLines = CODE.map((percent, i) => {
+    const tone = i % 4 === 0 ? "accent" : i % 3 === 0 ? "dim" : "muted";
+    return `<rect class="${tone} type" x="${code.x + 14}" y="${code.y + 16 + i * 12.5}" width="${((percent / 100) * (code.width - 28)).toFixed(1)}" height="4.5" rx="2.2" style="animation-delay: ${(0.3 + i * 0.4).toFixed(1)}s"/>`;
+  }).join("\n    ");
+
+  // The wireframe: a header bar, a hero block, a column and a card, drawn one after another.
+  const blocks: [number, number, number, number][] = [
+    [12, 12, page.width - 24, 7],
+    [12, 28, page.width - 24, 28],
+    [12, 64, 28, 28],
+    [48, 64, page.width - 60, 16],
+  ];
+  const wire = blocks
+    .map(([bx, by, w, h], i) => `<rect class="accent-line build" x="${page.x + bx}" y="${page.y + by}" width="${w}" height="${h}" rx="3" fill="none" stroke-width="1.6" pathLength="1" style="animation-delay: ${(1 + i * 0.9).toFixed(1)}s"/>`)
+    .join("\n    ");
 
   const css = `
-    .code { transform-box: fill-box; transform-origin: left; animation: type ${CYCLE}s ${EASE} infinite backwards; }
-    .blink { animation: blink 1s steps(1) infinite; }
-    .screen-glow { animation: glow 4s ease-in-out infinite; }
-    .hand-l { animation: tap 0.42s ease-in-out infinite alternate; }
-    .hand-r { animation: tap 0.42s ease-in-out 0.21s infinite alternate; }
-    .nod { transform-box: fill-box; transform-origin: 50% 100%; animation: nod 5s ease-in-out infinite; }
-    .key { animation: key 0.84s steps(1) infinite; }
-    @keyframes type { 0% { transform: scaleX(0); } 6%, 82% { transform: scaleX(1); } 90%, 100% { transform: scaleX(0); } }
-    @keyframes blink { 50% { opacity: 0; } }
-    @keyframes glow { 0%, 100% { opacity: 0.08; } 50% { opacity: 0.16; } }
-    @keyframes tap { from { transform: translateY(0); } to { transform: translateY(2.5px); } }
-    @keyframes nod { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-1.6deg); } }
-    @keyframes key { 50% { opacity: 0.35; } }`;
-
-  // Keyboard wider than the body, so both hands show beside it; some keys flash as they are "pressed".
-  const keyColumns = 20;
-  const keys = Array.from({ length: 3 }, (_, row) =>
-    Array.from({ length: keyColumns }, (_, col) => {
-      const pressed = (row * 5 + col * 3) % 7 === 0;
-      return `<rect class="${pressed ? "accent key" : "dim"}" x="${cx - 108 + col * 10.9}" y="${desk - 17 + row * 5}" width="8.4" height="3.2" rx="1"${pressed ? ` style="animation-delay: ${((col % 4) * 0.21).toFixed(2)}s"` : ` opacity="0.6"`}/>`;
-    }).join("")
-  ).join("\n    ");
+    .skin { fill: #e3b08a; } .skin-dark { stroke: #c08a63; } .hair { fill: #17181c; } .hair-line { stroke: #17181c; }
+    .shirt { fill: #3a4354; } .shirt-line { stroke: #3a4354; } .collar { fill: #2d3544; } .lid { fill: #1c2230; } .cup { fill: #c9d1d9; }
+    @media (prefers-color-scheme: light) { .shirt { fill: #2f3744; } .shirt-line { stroke: #2f3744; } .collar { fill: #222933; } .lid { fill: #2b3340; } .cup { fill: #8c959f; } }
+    .float-a { animation: float 6s ease-in-out infinite; }
+    .float-b { animation: float 7s ease-in-out -2s infinite; }
+    .type { transform-box: fill-box; transform-origin: left; animation: type ${CYCLE}s ${EASE} infinite backwards; }
+    .build { stroke-dasharray: 1; animation: build ${CYCLE}s ease-in-out infinite backwards; }
+    .pupil { animation: glance ${CYCLE}s ease-in-out infinite; }
+    .lids { transform-box: fill-box; transform-origin: center; animation: blink 4.6s ease-in-out infinite; }
+    .head { transform-box: fill-box; transform-origin: 50% 100%; animation: tilt ${CYCLE}s ease-in-out infinite; }
+    .arm-l { transform-box: fill-box; transform-origin: 100% 0%; animation: tap 0.4s ease-in-out infinite alternate; }
+    .arm-r { transform-box: fill-box; transform-origin: 0% 0%; animation: tap-r 0.4s ease-in-out 0.2s infinite alternate; }
+    .logo { animation: logo 3s ease-in-out infinite; }
+    .steam { stroke-dasharray: 3 5; animation: steam 2.4s linear infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes type { 0% { transform: scaleX(0); } 5%, 84% { transform: scaleX(1); } 92%, 100% { transform: scaleX(0); } }
+    @keyframes build { 0% { stroke-dashoffset: 1; } 10%, 84% { stroke-dashoffset: 0; } 92%, 100% { stroke-dashoffset: 1; } }
+    @keyframes glance { 0%, 8% { transform: translateX(0); } 14%, 44% { transform: translateX(-3px); } 52%, 86% { transform: translateX(3px); } 94%, 100% { transform: translateX(0); } }
+    @keyframes blink { 0%, 44%, 50%, 100% { transform: scaleY(1); } 47% { transform: scaleY(0.1); } }
+    @keyframes tilt { 0%, 8%, 94%, 100% { transform: rotate(0deg); } 14%, 44% { transform: rotate(-2deg); } 52%, 86% { transform: rotate(2deg); } }
+    @keyframes tap { from { transform: rotate(0deg); } to { transform: rotate(2.4deg); } }
+    @keyframes tap-r { from { transform: rotate(0deg); } to { transform: rotate(-2.4deg); } }
+    @keyframes logo { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+    @keyframes steam { to { stroke-dashoffset: -16; } }`;
 
   const body = `<g>
-    <!-- desk -->
-    <rect class="panel edge" x="${x + 6}" y="${desk}" width="388" height="10" rx="5" stroke-width="1"/>
-    <rect class="panel edge" x="${x + 34}" y="${desk + 10}" width="8" height="72" stroke-width="1"/>
-    <rect class="panel edge" x="${x + 358}" y="${desk + 10}" width="8" height="72" stroke-width="1"/>
-
-    ${monitor("l", x + 14, y + 36, 176, 122, -3, LEFT_SCREEN, 0.3, desk)}
-    ${monitor("r", x + 206, y + 22, 184, 136, 3, RIGHT_SCREEN, 1.2, desk)}
-
-    <!-- keyboard -->
-    <rect class="panel edge" x="${cx - 114}" y="${desk - 22}" width="228" height="22" rx="5" stroke-width="1"/>
-    ${keys}
-
-    <!-- programmer, from behind: body, then each arm reaching out to the keyboard -->
-    <path class="hoodie" d="M${cx - 72} ${y + 300} C${cx - 76} ${desk + 14} ${cx - 66} ${desk - 30} ${cx - 36} ${desk - 38} L${cx + 36} ${desk - 38} C${cx + 66} ${desk - 30} ${cx + 76} ${desk + 14} ${cx + 72} ${y + 300} Z"/>
-    <g class="hand-l">
-      <path class="sleeve" d="M${cx - 52} ${desk - 24} Q${cx - 74} ${desk - 30} ${cx - 88} ${desk - 13}" fill="none" stroke-width="19" stroke-linecap="round"/>
-      <ellipse class="skin" cx="${cx - 92}" cy="${desk - 11}" rx="9" ry="7"/>
+    <!-- floating panels: code on the left, a page being laid out on the right -->
+    <g class="float-a">
+      <rect class="panel edge" x="${code.x}" y="${code.y}" width="${code.width}" height="${code.height}" rx="10" stroke-width="1" opacity="0.94"/>
+      ${codeLines}
     </g>
-    <g class="hand-r">
-      <path class="sleeve" d="M${cx + 52} ${desk - 24} Q${cx + 74} ${desk - 30} ${cx + 88} ${desk - 13}" fill="none" stroke-width="19" stroke-linecap="round"/>
-      <ellipse class="skin" cx="${cx + 92}" cy="${desk - 11}" rx="9" ry="7"/>
-    </g>
-    <g class="nod">
-      <path class="hood" d="M${cx - 44} ${desk - 30} C${cx - 54} ${desk - 82} ${cx - 32} ${desk - 116} ${cx} ${desk - 118} C${cx + 32} ${desk - 116} ${cx + 54} ${desk - 82} ${cx + 44} ${desk - 30} C${cx + 22} ${desk - 20} ${cx - 22} ${desk - 20} ${cx - 44} ${desk - 30} Z"/>
-      <path class="hood-seam" d="M${cx} ${desk - 116} C${cx - 4} ${desk - 84} ${cx - 4} ${desk - 54} ${cx} ${desk - 24}" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+    <g class="float-b">
+      <rect class="panel edge" x="${page.x}" y="${page.y}" width="${page.width}" height="${page.height}" rx="10" stroke-width="1" opacity="0.94"/>
+      ${wire}
     </g>
 
-    <!-- chair back -->
-    <rect class="chair edge" x="${cx - 54}" y="${desk + 30}" width="108" height="74" rx="18" stroke-width="1"/>
+    <!-- arms, elbows out, reaching to the keyboard behind the laptop -->
+    <path class="shirt shirt-line arm-l" d="M${cx - 60} ${desk - 62} L${cx - 104} ${desk - 26} L${cx - 62} ${desk - 6}" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <path class="shirt shirt-line arm-r" d="M${cx + 60} ${desk - 62} L${cx + 104} ${desk - 26} L${cx + 62} ${desk - 6}" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- torso and collar -->
+    <path class="shirt" d="M${cx - 76} ${desk} C${cx - 80} ${desk - 58} ${cx - 54} ${desk - 88} ${cx - 22} ${desk - 94} L${cx + 22} ${desk - 94} C${cx + 54} ${desk - 88} ${cx + 80} ${desk - 58} ${cx + 76} ${desk} Z"/>
+    <rect class="skin" x="${cx - 13}" y="${desk - 118}" width="26" height="30" rx="8"/>
+    <path class="collar" d="M${cx - 24} ${desk - 96} L${cx - 13} ${desk - 100} L${cx} ${desk - 82} L${cx + 13} ${desk - 100} L${cx + 24} ${desk - 96} L${cx + 8} ${desk - 70} L${cx} ${desk - 78} L${cx - 8} ${desk - 70} Z"/>
+
+    <!-- head -->
+    <g class="head">
+      <ellipse class="skin" cx="${cx - 39}" cy="${desk - 148}" rx="6" ry="10"/>
+      <ellipse class="skin" cx="${cx + 39}" cy="${desk - 148}" rx="6" ry="10"/>
+      <rect class="skin" x="${cx - 37}" y="${desk - 196}" width="74" height="90" rx="35"/>
+      <!-- beard and moustache -->
+      <path class="hair" d="M${cx - 37} ${desk - 152} C${cx - 39} ${desk - 122} ${cx - 30} ${desk - 104} ${cx} ${desk - 102} C${cx + 30} ${desk - 104} ${cx + 39} ${desk - 122} ${cx + 37} ${desk - 152} C${cx + 32} ${desk - 140} ${cx + 24} ${desk - 136} ${cx + 15} ${desk - 137} C${cx + 8} ${desk - 142} ${cx - 8} ${desk - 142} ${cx - 15} ${desk - 137} C${cx - 24} ${desk - 136} ${cx - 32} ${desk - 140} ${cx - 37} ${desk - 152} Z"/>
+      <path class="skin-dark" d="M${cx - 7} ${desk - 127} Q${cx} ${desk - 123} ${cx + 7} ${desk - 127}" fill="none" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- hair -->
+      <path class="hair" d="M${cx - 39} ${desk - 158} C${cx - 44} ${desk - 194} ${cx - 24} ${desk - 210} ${cx + 2} ${desk - 210} C${cx + 28} ${desk - 210} ${cx + 45} ${desk - 192} ${cx + 39} ${desk - 158} C${cx + 36} ${desk - 174} ${cx + 26} ${desk - 182} ${cx + 4} ${desk - 180} C${cx - 18} ${desk - 182} ${cx - 34} ${desk - 174} ${cx - 39} ${desk - 158} Z"/>
+      <!-- brows, eyes, nose -->
+      <path class="hair-line" d="M${cx - 26} ${desk - 163} L${cx - 9} ${desk - 165}" stroke-width="3.6" stroke-linecap="round"/>
+      <path class="hair-line" d="M${cx + 9} ${desk - 165} L${cx + 26} ${desk - 163}" stroke-width="3.6" stroke-linecap="round"/>
+      <g class="lids">
+        <ellipse cx="${cx - 17}" cy="${desk - 154}" rx="7" ry="5.5" fill="#fff"/>
+        <ellipse cx="${cx + 17}" cy="${desk - 154}" rx="7" ry="5.5" fill="#fff"/>
+        <g class="pupil">
+          <circle class="hair" cx="${cx - 17}" cy="${desk - 154}" r="3"/>
+          <circle class="hair" cx="${cx + 17}" cy="${desk - 154}" r="3"/>
+        </g>
+      </g>
+      <path class="skin-dark" d="M${cx} ${desk - 154} L${cx - 3} ${desk - 142} L${cx + 3} ${desk - 141}" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- laptop (its lid faces the viewer), desk, cup -->
+    <path class="lid edge" d="M${cx - 66} ${desk} L${cx - 74} ${desk - 84} Q${cx - 75} ${desk - 92} ${cx - 67} ${desk - 92} L${cx + 67} ${desk - 92} Q${cx + 75} ${desk - 92} ${cx + 74} ${desk - 84} L${cx + 66} ${desk} Z" stroke-width="1"/>
+    <circle class="accent logo" cx="${cx}" cy="${desk - 46}" r="13"/>
+    <rect class="edge panel" x="${x + 14}" y="${desk}" width="392" height="9" rx="4.5" stroke-width="1"/>
+    <path class="cup" d="M${cx + 118} ${desk - 34} h26 l-3 34 h-20 z"/>
+    <path class="dim-line steam" d="M${cx + 126} ${desk - 40} q-4 -7 0 -13 q4 -6 0 -12 M${cx + 137} ${desk - 40} q-4 -7 0 -13 q4 -6 0 -12" fill="none" stroke-width="1.6" stroke-linecap="round"/>
   </g>`;
 
   return { css, body };
