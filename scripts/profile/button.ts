@@ -1,11 +1,11 @@
 /**
- * A contact card: icon in a tinted tile, the channel's name, where it leads,
- * and an arrow. All four use the same single-colour icon style.
+ * A contact link: icon, the channel's name with an arrow, and where it leads.
+ * No box around it; all four use the same single-colour icon style.
  */
 import { EASE, escapeXml, styles, svg } from "./theme.ts";
 
 const WIDTH = 290;
-const HEIGHT = 88;
+const HEIGHT = 68;
 
 /** 24×24 icons. `stroke` icons are outlines; `fill` icons are solid glyphs. */
 const ICONS = {
@@ -32,11 +32,9 @@ export function button(label: string, detail: string, iconName: ContactIcon, ord
 
   return svg(WIDTH, HEIGHT, `${label}: ${detail}`, `  ${styles(css)}
   <g class="card">
-    <rect class="panel edge" x="0.5" y="0.5" width="${WIDTH - 1}" height="${HEIGHT - 1}" rx="16" stroke-width="1"/>
-    <rect class="accent" x="18" y="20" width="48" height="48" rx="13" opacity="0.14"/>
-    <g transform="translate(30 32)">${glyph}</g>
-    <text class="fg" x="80" y="40" font-size="16.5" font-weight="700">${escapeXml(label)}</text>
-    <text class="dim" x="80" y="60" font-size="${detail.length > 22 ? 11 : 12.5}">${escapeXml(detail)}</text>
-    <path class="arrow dim-line" d="M${WIDTH - 34} 49l10-10m-8 0h8v8" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(6 18) scale(1.25)">${glyph}</g>
+    <text class="fg" x="50" y="31" font-size="17" font-weight="700">${escapeXml(label)}</text>
+    <path class="arrow accent-line" d="M${62 + label.length * 10.6} 30l8-8m-6.5 0h6.5v6.5" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="dim" x="50" y="52" font-size="${detail.length > 22 ? 12 : 13}">${escapeXml(detail)}</text>
   </g>`);
 }

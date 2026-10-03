@@ -10,17 +10,17 @@
  * already shows beside it (the contribution graph and the repository list).
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { caseStudies, copy, experience, focusAreas, metrics as siteMetrics, profile } from "../lib/data.ts";
-import { EXCLUDED_REPOS, OVERRIDES } from "../lib/project-catalog.ts";
+import { EXCLUDED_REPOS, OVERRIDES, SELECTED_REPOS } from "../lib/project-catalog.ts";
 import { monthlyChart, weekdayChart, type DayCount } from "./profile/analytics.ts";
 import { button, type ContactIcon } from "./profile/button.ts";
-import { card } from "./profile/card.ts";
 import { footer } from "./profile/footer.ts";
 import { header } from "./profile/header.ts";
 import { metrics } from "./profile/metrics.ts";
 import { now } from "./profile/now.ts";
+import { portfolio } from "./profile/portfolio.ts";
 import { radar } from "./profile/radar.ts";
 import { stack } from "./profile/stack.ts";
 
@@ -77,7 +77,6 @@ function contributions(): DayCount[] | undefined {
   }
 }
 
-const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const write = (name: string, content: string) => writeFileSync(path.join(ASSETS, name), content);
 
 /** Contact cards under the hero: where each leads and the line shown under its name. */
@@ -141,23 +140,15 @@ async function build(): Promise<void> {
   write("stack.svg", stack(STACK));
   CONTACTS.forEach((item, order) => write(item.file, button(item.label, item.detail, item.icon, order)));
 
-  const featured = caseStudies.filter((study) => study.image && existsSync(path.join(ROOT, "public", study.image)));
-  const cards = await Promise.all(
-    featured.map(async (study, index) => {
-      const file = `card-${slug(study.name)}.svg`;
-      write(
-        file,
-        await card({
-          name: study.name,
-          context: study.context,
-          summary: study.summary,
-          stats: study.stats ?? [],
-          imagePath: path.join(ROOT, "public", study.image!),
-          index,
-        })
-      );
-      // Open-source work links to its repo; private work to the case study on the site.
-      return { file, alt: `${study.name}: ${study.summary}`, href: study.links?.[0].href ?? `${profile.site}/#work` };
+  const demos = Object.entries(OVERRIDES).filter(([repo, project]) => !EXCLUDED_REPOS.has(repo) && project.demo).length;
+  write(
+    "portfolio.svg",
+    portfolio({
+      title: "See the work in detail",
+      facts: [`${caseStudies.length} case studies`, `${SELECTED_REPOS.length} projects`, `${demos} live demos`],
+      address: profile.site?.replace(/^https?:\/\//, "") ?? "",
+      // The line under each name is its context, up to the first separator.
+      projects: caseStudies.map((study) => ({ name: study.name, line: study.role })),
     })
   );
 
@@ -178,11 +169,7 @@ ${pair(
   image("radar.svg", `Projects per area: ${coverage.axes.map((axis) => `${axis.label} ${axis.count}`).join(", ")}`, "49.5%")
 )}
 
-### Featured work
-
-<p>
-${cards.map((item) => `  <a href="${item.href}">${image(item.file, item.alt, "49.5%")}</a>`).join("\n")}
-</p>
+<a href="${profile.site}">${image("portfolio.svg", `Portfolio: ${caseStudies.length} case studies, ${SELECTED_REPOS.length} projects and ${demos} live demos at ${profile.site}`, "100%")}</a>
 ${days ? `\n### Activity\n\n${pair(image("analytics-months.svg", "Contributions per month over the last year", "49.5%"), image("analytics-weekdays.svg", "Contributions by day of the week", "49.5%"))}\n` : ""}
 <a href="mailto:${profile.email}">${image("footer.svg", `${copy.contact.title}: ${profile.email}`, "100%")}</a>
 `;
