@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 
+/** Fades content up as it scrolls into view, once. */
 export default function Reveal({
   children,
   delay = 0,

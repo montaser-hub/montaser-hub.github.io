@@ -42,3 +42,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated GitHub profile README (published to its own repo by `npm run profile`)
+/profile/
+
+# local notes
+/PROFILE_README.md

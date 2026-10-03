@@ -4,7 +4,8 @@ import type {
   TechStack,
   Experience,
   EducationEntry,
-  FlagshipProject,
+  CaseStudy,
+  SiteCopy,
 } from "./types";
 
 export const profile: Profile = {
@@ -18,6 +19,36 @@ export const profile: Profile = {
   whatsapp: "https://wa.me/201092889329",
   github: "https://github.com/montaser-hub",
   linkedin: "https://www.linkedin.com/in/montaser-ismail/",
+  site: "https://montaser-hub.github.io",
+};
+
+export const copy: SiteCopy = {
+  hero: {
+    eyebrow: "Hi, my name is",
+    headlineLead: "I build",
+    headlinePhrases: [
+      "software for how businesses actually run.",
+      "metadata-driven React interfaces.",
+      "real-time Node.js and NestJS APIs.",
+      "systems backed by 1,200+ tests.",
+    ],
+    primaryCta: "View my work",
+    secondaryCta: "Get in touch",
+  },
+  about: [
+    "I'm a full-stack engineer who came up through the ITI MEARN bootcamp and now builds software for how enterprise teams actually operate — metadata-driven UIs, approval workflows, and backend services that hold up under real load.",
+    "At Arkaan International Group I build a rendering engine that turns backend JSON schemas directly into reusable React components and forms, cutting manual frontend work dramatically. Before that, at Qyser Tech, I worked backend — Node.js services and MongoDB aggregations processing 100K+ records to power internal reporting and HR approvals.",
+    "The case studies below show that work: a tendering platform, a ride-hailing backend, a residency scheduling API and SmartShift, a hospital shift-scheduling platform.",
+  ],
+  contact: {
+    eyebrow: "What's next?",
+    title: "Let's work together",
+    body: "I'm open to full-stack roles and freelance projects that need someone comfortable across the whole stack. Reach out and I'll get back to you.",
+    cta: "Say hello",
+  },
+  footer: "Designed & built by Montaser Ismail.",
+  metaDescription:
+    "Full-stack software engineer building enterprise web platforms: scheduling systems, procurement tools and real-time APIs with React, Angular, Node.js and NestJS.",
 };
 
 export const focusAreas: FocusArea[] = [
@@ -34,7 +65,7 @@ export const focusAreas: FocusArea[] = [
   {
     title: "Testing & reliability",
     description:
-      "Writing unit and integration tests (Jasmine, Supertest, Karma) and following SOLID principles so features stay correct as the codebase grows.",
+      "Writing the tests alongside the feature: 639 unit tests on a NestJS ride-hailing backend and 566 on a React procurement front-end (Jest, Vitest, Jasmine, Supertest), so features stay correct as the codebase grows.",
   },
 ];
 
@@ -110,35 +141,95 @@ export const education: EducationEntry[] = [
   },
 ];
 
-export const flagshipProject: FlagshipProject = {
-  name: "SmartShift",
-  role: "Full-stack engineer",
-  summary:
-    "An enterprise workforce scheduling platform for organizations that run shift-based operations — built as an Nx monorepo with a Node.js/Express API, a React employee dashboard, and an Angular admin portal, with a second Angular frontend built in collaboration with another engineer.",
-  highlights: [
-    "REST API (Node.js, Express, MongoDB/Mongoose) modeling departments, sub-departments, positions & levels, locations, schedules, shifts, and shift-swap requests — the real org structure of a shift-based business.",
-    "JWT authentication, Joi-validated inputs, and a notifications system (email via Nodemailer) covering approvals and schedule changes.",
-    "React employee dashboard (Redux Toolkit, React Router, FullCalendar / react-big-calendar, Recharts) for viewing schedules, requesting shift swaps, and tracking hours.",
-    "Angular Admin Portal (Angular Material, CDK) for managing departments, staff, positions, and shift configurations.",
-    "AI assistant endpoint (Groq) to help staff query schedules and policies in natural language.",
-    "Dockerized services with CI/CD in an Nx monorepo, plus a collaborator-built Angular frontend extending the platform with calendar views, swap-request workflows, and profile management.",
-  ],
-  tech: [
-    "Node.js",
-    "Express",
-    "MongoDB",
-    "React",
-    "Angular",
-    "TypeScript",
-    "Redux Toolkit",
-    "Nx",
-    "Docker",
-    "CI/CD",
-    "AWS S3",
-    "JWT",
-  ],
-  links: [
-    { label: "API & React dashboard", href: "https://github.com/montaser-hub/Portal" },
-    { label: "Angular frontend", href: "https://github.com/hageramadan/SmartShift" },
-  ],
-};
+/**
+ * Featured work, in order. Facts here are checked against the code: test
+ * counts were re-run, commit shares come from git history, and the stack from
+ * each project's dependencies. Keep it that way when editing.
+ */
+export const caseStudies: CaseStudy[] = [
+  {
+    name: "SmartShift",
+    context: "Team project · 2025",
+    role: "Full-stack engineer · API lead",
+    summary:
+      "A shift-scheduling platform for hospitals: staff see their schedule, swap shifts through a two-step approval and get live notifications. A Node.js API and a React staff dashboard in one Nx monorepo, with an Angular admin portal.",
+    highlights: [
+      "I wrote most of the REST API (Express, MongoDB): auth and users, swap requests with peer-then-manager approval, shift time handling including overnight shifts, and the shared filtering and pagination layer.",
+      "JWT sessions in httpOnly cookies, role-based access, Joi-validated input, and notifications pushed live over Server-Sent Events.",
+      "An AI assistant endpoint (Groq) that answers questions about schedules in plain language.",
+      "Contributed to the React dashboard (Redux Toolkit, calendar views) built mainly by a teammate; the Angular admin portal is a teammate's.",
+    ],
+    stats: [
+      { value: "76 / 102", label: "API commits are mine" },
+      { value: "3 apps", label: "API, React, Angular" },
+    ],
+    tech: ["Node.js", "Express", "MongoDB", "React", "Redux Toolkit", "Angular", "Nx", "Docker"],
+    links: [
+      { label: "API & React dashboard", href: "https://github.com/montaser-hub/Portal" },
+      { label: "Angular admin portal", href: "https://github.com/hageramadan/SmartShift" },
+    ],
+    image: "/projects/smartshift.webp",
+  },
+  {
+    name: "Tenders — Procurement Platform",
+    context: "Arkaan International · client project",
+    role: "Lead front-end developer · UI designer",
+    summary:
+      "A tendering and procurement system. I designed the interface in Figma, then led the React front end, built so that screens are generated from server-side metadata instead of being hand-coded one by one.",
+    highlights: [
+      "Metadata-driven grids and forms: columns, fields, validation and layout come from backend schemas.",
+      "A workflow designer for configuring approval steps in tender processes.",
+      "A mock-server mode so front-end work and demos run without the backend.",
+      "Tested as it was built: 566 Vitest tests across 49 files.",
+    ],
+    stats: [
+      { value: "566", label: "tests passing" },
+      { value: "49", label: "test files" },
+    ],
+    tech: ["React", "Redux Toolkit", "Tailwind CSS", "Vite", "Vitest"],
+    note: "Source private",
+    image: "/projects/tenders.webp",
+  },
+  {
+    name: "Trigo — Ride-Hailing Backend",
+    context: "Delivery Quote Ltd · team project",
+    role: "Backend developer",
+    summary:
+      "The real-time API behind a ride-hailing app: matching riders with drivers, shared rides, live driver locations, and in-app chat and calls.",
+    highlights: [
+      "NestJS modules over PostgreSQL with Prisma, with rate limiting and Swagger docs.",
+      "Live locations, chat and call signaling over Socket.io, scaled across instances with a Redis adapter.",
+      "Driver matching and shared-ride logic covered by unit tests: 639 passing across 49 suites.",
+    ],
+    stats: [
+      { value: "639", label: "unit tests" },
+      { value: "136", label: "documented endpoints" },
+      { value: "17 / 24", label: "commits are mine" },
+    ],
+    tech: ["NestJS", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Socket.io"],
+    note: "Source private",
+    image: "/projects/trigo.webp",
+    imageCaption: "The API's Swagger documentation: 21 areas, 136 endpoints.",
+  },
+  {
+    name: "Qyser — Residency Scheduling API",
+    context: "Qyser Tech · employer, Sep 2024 – Mar 2026",
+    role: "Backend developer",
+    summary:
+      "The backend of a scheduling platform for hospital residency programs: rotations, on-call and clinic shifts, swaps and leave with approvals, performance tracking and reporting, built by a team of five.",
+    highlights: [
+      "Scheduling with configurable rules per position and level, and shift-swap and leave requests that go through approval flows.",
+      "Performance feature built on MongoDB aggregations, giving admins insight per resident and cutting manual HR reporting.",
+      "Role and permission system, audit log, Excel exports, background jobs on BullMQ and Redis, live updates over Server-Sent Events and push notifications.",
+    ],
+    stats: [
+      { value: "~470 / 754", label: "commits are mine" },
+      { value: "168", label: "API endpoints" },
+      { value: "18 months", label: "on the product" },
+    ],
+    tech: ["Node.js", "Express", "MongoDB", "Redis", "BullMQ", "Docker"],
+    note: "Source private",
+    image: "/projects/qyser.webp",
+    imageCaption: "The web app my API serves (UI by the front-end team), running on demo data.",
+  },
+];

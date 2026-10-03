@@ -1,39 +1,19 @@
 import Reveal from "./Reveal";
-import { focusAreas, techStack } from "@/lib/data";
+import SectionHeading from "./SectionHeading";
+import { copy, focusAreas, techStack } from "@/lib/data";
+import TechIcon from "./TechIcon";
 
 export default function About() {
   return (
     <section id="about" className="scroll-mt-20 py-24">
-      <Reveal>
-        <div className="mb-10 flex items-center gap-4">
-          <h2 className="text-2xl font-semibold text-foreground">About</h2>
-          <span className="h-px flex-1 bg-border" />
-        </div>
-      </Reveal>
+      <SectionHeading>About</SectionHeading>
 
       <div className="grid gap-12 lg:grid-cols-5">
         <Reveal className="lg:col-span-3" delay={0.05}>
           <div className="space-y-4 text-base leading-relaxed text-muted">
-            <p>
-              I&apos;m a full-stack engineer who came up through the ITI
-              MEARN bootcamp and now builds software for how enterprise
-              teams actually operate — metadata-driven UIs, approval
-              workflows, and backend services that hold up under real load.
-            </p>
-            <p>
-              At Arkaan International Group I build a rendering engine that
-              turns backend JSON schemas directly into reusable React
-              components and forms, cutting manual frontend work
-              dramatically. Before that, at Qyser Tech, I worked backend —
-              Node.js services and MongoDB aggregations processing
-              100K+ records to power internal reporting and HR approvals.
-            </p>
-            <p>
-              Most recently I&apos;ve been building{" "}
-              <span className="text-foreground">SmartShift</span>, a
-              multi-frontend workforce scheduling platform — see the case
-              study below.
-            </p>
+            {copy.about.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
@@ -65,8 +45,9 @@ export default function About() {
                     {items.map((item) => (
                       <span
                         key={item}
-                        className="rounded-full border border-border bg-surface-hover px-3 py-1 text-xs text-muted"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-hover px-3 py-1 text-xs text-muted"
                       >
+                        <TechIcon tech={item} className="h-3.5 w-3.5" />
                         {item}
                       </span>
                     ))}

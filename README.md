@@ -1,25 +1,39 @@
 # Montaser Ismail — Portfolio
 
-Personal portfolio site built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, and Framer Motion. Features an animated WebGL globe (via [cobe](https://github.com/shuding/cobe)) in the hero, inspired by Cloudflare's connect-globe visual.
+My portfolio site: a single page built with Next.js (App Router), TypeScript, Tailwind CSS 4 and Framer Motion,
+exported as a static site and hosted on GitHub Pages at https://montaser-hub.github.io.
 
-## Structure
+## How it is organized
 
-- `app/` — root layout, global styles, and the single page (`page.tsx`)
-- `components/` — Sidebar (nav), Hero (with `ConnectGlobe`), About, FeaturedProject, Projects, Contact, Footer, plus small `Reveal` scroll-animation wrapper and inline icons
-- `lib/data.ts` — all content (profile info, tech stack, featured project, project list) in one place — edit this file to update copy without touching components
+The site is driven by data: components render what the files in `lib/` describe, so content changes never touch
+component code.
 
-## Development
+| File | What it holds |
+|---|---|
+| `lib/data.ts` | Profile, page copy, focus areas, tech stack, experience, education and the featured case studies |
+| `lib/project-catalog.ts` | Hand-written copy per GitHub repo, which repos are "selected" and in what order, and which are hidden |
+| `lib/projects.ts` | Reads my public repos from the GitHub API at build time and merges them with the catalog |
+| `lib/sections.ts` | The page's sections; both navigation menus are generated from it |
+| `public/projects/` | Screenshots, matched to repos by file name (see its README) |
+
+Projects appear in three tiers: **Featured Work** (case studies), **Selected Projects** (cards that flip to a
+screenshot) and **Learning & Labs** (a compact list). A new public repo shows up under Learning & Labs on the
+next deploy; add it to `SELECTED_REPOS` to promote it.
+
+Animation respects the visitor's reduced-motion setting (`components/MotionProvider.tsx`, `app/globals.css`),
+and the WebGL globe pauses when it is off screen.
+
+## Commands
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:3000
+npm run build      # static site in out/
+npm run lint
+npm run images     # regenerate the link-preview image and PNG favicon
+npm run profile    # generate my GitHub profile README from the same data (needs the gh CLI)
+npm run deploy     # build and publish to the gh-pages branch
 ```
 
-## Build
-
-```bash
-npm run build
-npm start
-```
-
-Deploys cleanly to Vercel, Cloudflare Pages, or any Node host.
+Facts in the case studies (test counts, commit shares, endpoint counts) were checked against the projects'
+code and git history; re-check before changing them.

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import MotionProvider from "@/components/MotionProvider";
+import { copy, profile } from "@/lib/data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,23 +14,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://montaser-ismail.dev";
+const title = `${profile.name} — ${profile.title}`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: "Montaser Ismail — Software Engineer",
-  description:
-    "Full-stack software engineer building enterprise-grade web platforms — scheduling systems, admin portals, and APIs with React, Angular, Node.js, and TypeScript.",
+  // Absolute URLs for link previews; unset until the site has a public address.
+  metadataBase: profile.site ? new URL(profile.site) : undefined,
+  title,
+  description: copy.metaDescription,
   openGraph: {
-    title: "Montaser Ismail — Software Engineer",
-    description:
-      "Full-stack software engineer building enterprise-grade web platforms with React, Angular, Node.js, and TypeScript.",
-    url: siteUrl,
-    siteName: "Montaser Ismail",
+    title,
+    description: copy.metaDescription,
+    url: profile.site,
+    siteName: profile.name,
     type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: title }],
   },
   icons: {
-    icon: "/favicon.svg",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }, { url: "/favicon.png", type: "image/png" }],
+    apple: "/favicon.png",
   },
 };
 
@@ -39,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

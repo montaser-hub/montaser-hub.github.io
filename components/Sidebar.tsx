@@ -1,13 +1,6 @@
 import { profile } from "@/lib/data";
+import { navLinks } from "@/lib/sections";
 import { GithubIcon, LinkedinIcon, WhatsappIcon, MailIcon } from "./icons";
-
-const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
-  { href: "#work", label: "Work" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
-];
 
 const socials = [
   { href: profile.github, label: "GitHub", icon: GithubIcon },

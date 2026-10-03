@@ -6,7 +6,7 @@
   --surface-hover: #101623;
   --foreground: #e7ebf3;
   --muted: #8b96a8;
-  --muted-dim: #5b6576;
+  --muted-dim: #77828f; /* 4.6:1 or better on every surface (WCAG AA) */
   --accent: #f6821f;
   --accent-dim: #c96a19;
   --border: #1a2130;
@@ -26,8 +26,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -73,5 +75,89 @@ body {
 @media (max-width: 1024px) {
   html {
     scroll-padding-top: 5rem;
+  }
+}
+
+/* Project card flip — tech-stack face rotates to reveal a screenshot on hover/focus. */
+.flip-card {
+  perspective: 1600px;
+}
+
+.flip-card-inner {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  will-change: transform;
+}
+
+.flip-card:focus-within .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+.flip-card-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-card-face--back {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner {
+    transition: none;
+    transform: none !important;
+  }
+
+  .flip-card-face--back {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .flip-card:focus-within .flip-card-face--back {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .flip-card:hover .flip-card-face--back {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+/* Typewriter caret (components/Typewriter.tsx). */
+.typewriter-caret {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.95em;
+  margin-left: 0.06em;
+  vertical-align: -0.1em;
+  background: var(--accent);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-caret {
+    display: none;
   }
 }

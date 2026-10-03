@@ -8,12 +8,14 @@ export default function ConnectGlobe() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Hidden below the md breakpoint: don't create a WebGL context nobody sees.
+    if (!canvas || canvas.offsetWidth === 0) return;
 
     let phi = 0;
     let width = canvas.offsetWidth;
     const onResize = () => {
-      if (canvas) width = canvas.offsetWidth;
+      width = canvas.offsetWidth;
+      if (!frame) draw(); // the animation loop redraws on its own when running
     };
     window.addEventListener("resize", onResize);
 
@@ -39,16 +41,31 @@ export default function ConnectGlobe() {
       ],
     });
 
+    // Spin only while the globe is on screen, and not at all for users who
+    // prefer reduced motion: WebGL redraws every frame otherwise, for nothing.
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
+    const draw = () => globe.update({ phi, width: width * 2, height: width * 2 });
     const animate = () => {
       phi += 0.0032;
-      globe.update({ phi, width: width * 2, height: width * 2 });
+      draw();
       frame = requestAnimationFrame(animate);
     };
-    frame = requestAnimationFrame(animate);
+    const start = () => {
+      if (!frame && !reduceMotion) frame = requestAnimationFrame(animate);
+    };
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    draw();
+    const observer = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+    observer.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(frame);
+      stop();
+      observer.disconnect();
       globe.destroy();
       window.removeEventListener("resize", onResize);
     };

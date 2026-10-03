@@ -1,15 +1,11 @@
 import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
 import { experience, education } from "@/lib/data";
 
 export default function Experience() {
   return (
     <section id="experience" className="scroll-mt-20 py-24">
-      <Reveal>
-        <div className="mb-10 flex items-center gap-4">
-          <h2 className="text-2xl font-semibold text-foreground">Experience</h2>
-          <span className="h-px flex-1 bg-border" />
-        </div>
-      </Reveal>
+      <SectionHeading>Experience</SectionHeading>
 
       <div className="space-y-10">
         {experience.map((job, i) => (
