@@ -11,17 +11,25 @@ touch out/.nojekyll              # keep the _next/ folder
 
 SHA=$(git rev-parse --short HEAD)
 WORKTREE=$(mktemp -d)
-trap 'git worktree remove --force "$WORKTREE" 2>/dev/null || true' EXIT
+BUILD_BRANCH=gh-pages-build
+
+# The temporary branch can only be deleted once its worktree is gone, and a
+# leftover from an interrupted run would make the next one fail.
+cleanup() {
+  git worktree remove --force "$WORKTREE" 2>/dev/null || true
+  git branch -D "$BUILD_BRANCH" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+git branch -D "$BUILD_BRANCH" >/dev/null 2>&1 || true
 
 git worktree add --detach "$WORKTREE" >/dev/null
 (
   cd "$WORKTREE"
-  git checkout --orphan gh-pages-build >/dev/null 2>&1
+  git checkout --orphan "$BUILD_BRANCH" >/dev/null
   git rm -rfq . >/dev/null 2>&1 || true
   cp -a "$OLDPWD/out/." .
   git add -A
   git commit -qm "Deploy $SHA"
   git push -f origin HEAD:gh-pages
 )
-git branch -D gh-pages-build >/dev/null 2>&1 || true
 echo "Published $SHA to gh-pages"
