@@ -33,7 +33,8 @@ next page load; add it to `SELECTED_REPOS` to promote it.
 | Give a repo a proper name, description and tech list | `OVERRIDES` in `lib/project-catalog.ts` |
 | Promote a repo to a card, or hide one | `SELECTED_REPOS` or `EXCLUDED_REPOS` in `lib/project-catalog.ts` |
 | Add a card screenshot | drop `<repo-name>.webp` into `public/projects/` |
-| Add, rename or reorder a page section | `lib/sections.ts` (a new section also needs its component in `app/page.tsx`) |
+| Rename or reorder a page section, or change its heading | `lib/sections.ts` (a new section also needs its component in `app/page.tsx`) |
+| Change a button or small label ("Live demo", "Education", the footer line) | `copy` in `lib/data.ts` |
 | Change the icons on the GitHub profile's tech line | `STACK` in `scripts/build-profile-readme.ts` |
 
 After a change to `lib/`, run `npm run deploy` for the site and `npm run profile:publish` for the GitHub

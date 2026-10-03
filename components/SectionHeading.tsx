@@ -6,18 +6,21 @@ import { sections, type SectionId } from "@/lib/sections";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * Section title with its number in the page order; the rule draws itself
- * across the row when the heading scrolls into view.
+ * A heading with a rule that draws itself across the row when it scrolls into
+ * view. Given a `section`, it shows that section's title and its number in
+ * the page order; given text instead, it is an unnumbered sub-heading.
  */
 export default function SectionHeading({
   children,
   section,
 }: {
-  children: string;
-  /** Numbers the heading from the section list; omit for sub-headings. */
+  /** Text of a sub-heading. Omit when `section` is given. */
+  children?: string;
   section?: SectionId;
 }) {
-  const number = section ? sections.findIndex(({ id }) => id === section) + 1 : 0;
+  const index = sections.findIndex(({ id }) => id === section);
+  const number = index + 1;
+  const title = children ?? sections[index]?.title;
 
   return (
     <motion.div
@@ -36,7 +39,7 @@ export default function SectionHeading({
             {String(number).padStart(2, "0")}.
           </span>
         )}
-        {children}
+        {title}
       </motion.h2>
       <motion.span
         aria-hidden="true"

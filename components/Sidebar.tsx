@@ -12,7 +12,7 @@ const ICONS: Record<ContactLink["kind"], typeof GithubIcon> = {
 
 export default function Sidebar() {
   return (
-    <header className="flex items-end justify-between gap-4 px-6 pt-8 pb-4 sm:px-10 lg:fixed lg:inset-y-0 lg:left-0 lg:w-64 lg:flex-col lg:items-stretch lg:justify-between lg:px-8 lg:py-16 xl:w-72 xl:px-10">
+    <header className="flex items-end justify-between gap-4 px-6 pt-8 pb-4 sm:px-10 lg:fixed lg:inset-y-0 lg:left-[max(0px,calc((100vw-80rem)/2))] lg:w-64 lg:flex-col lg:items-stretch lg:justify-between lg:px-8 lg:py-16 xl:w-72 xl:px-10">
       <div>
         <h1 className="whitespace-nowrap text-xl font-bold tracking-tight text-foreground sm:text-2xl">
           <a href="#top" className="transition-colors hover:text-accent">

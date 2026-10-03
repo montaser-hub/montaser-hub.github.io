@@ -18,7 +18,7 @@ function CaseStudyItem({ study, priority, isLast }: { study: CaseStudy; priority
   return (
     <article
       id={anchorId(study)}
-      className={`scroll-mt-24 py-8 ${!isLast ? "border-b border-border/30 pb-20 mb-20" : ""}`}
+      className={`scroll-mt-32 py-8 ${!isLast ? "border-b border-border/30 pb-20 mb-20" : ""}`}
     >
       {/* Header: Context, Title, Links */}
       <header className="flex flex-wrap items-start justify-between gap-4">
@@ -137,10 +137,10 @@ export default function FeaturedProject() {
 
   return (
     <section id="work" className="scroll-mt-20 py-24">
-      <SectionHeading section="work">Featured Work</SectionHeading>
+      <SectionHeading section="work" />
 
-      {/* Sticky Project Sub-Navigation Bar */}
-      <div className="sticky top-0 z-20 -mx-4 mb-10 border-b border-border/40 bg-background/90 px-4 py-3 backdrop-blur sm:-mx-8 sm:px-8">
+      {/* Jump list; below the lg breakpoint it sticks under the section menu (MobileNav) */}
+      <div className="sticky top-14 z-20 lg:top-0 -mx-4 mb-10 border-b border-border/40 bg-background/90 px-4 py-3 backdrop-blur sm:-mx-8 sm:px-8">
         <nav aria-label="Featured projects jump list" className="flex flex-wrap items-center gap-2 sm:gap-4">
           {caseStudies.map((study, index) => {
             const targetId = anchorId(study);

@@ -6,6 +6,7 @@ import ConnectGlobe from "./ConnectGlobe";
 import Typewriter from "./Typewriter";
 import Magnetic from "./Magnetic";
 import { copy, profile } from "@/lib/data";
+import { sections } from "@/lib/sections";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -96,8 +97,8 @@ export default function Hero() {
       {/* Mouse-shaped scroll cue: the wheel drifts down and fades, on a loop. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-6 hidden justify-center sm:flex">
         <motion.a
-          href="#about"
-          aria-label="Scroll to About"
+          href={`#${sections[0].id}`}
+          aria-label={`Scroll to ${sections[0].label}`}
           style={{ opacity: cueOpacity }}
           className="scroll-mouse pointer-events-auto"
         >

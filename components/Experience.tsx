@@ -1,12 +1,12 @@
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import Timeline from "./Timeline";
-import { experience, education } from "@/lib/data";
+import { copy, experience, education } from "@/lib/data";
 
 export default function Experience() {
   return (
     <section id="experience" className="scroll-mt-20 py-24">
-      <SectionHeading section="experience">Experience</SectionHeading>
+      <SectionHeading section="experience" />
 
       <Timeline>
         <div className="space-y-12">
@@ -48,7 +48,7 @@ export default function Experience() {
       <Reveal delay={0.1}>
         <div className="mt-14 border-t border-border pt-10">
           <h3 className="mb-6 text-sm font-semibold uppercase tracking-wide text-muted-dim">
-            Education
+            {copy.labels.education}
           </h3>
           <div className="space-y-5">
             {education.map((entry) => (

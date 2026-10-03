@@ -2,6 +2,7 @@
 
 import Reveal from "./Reveal";
 import { useLiveProjects } from "@/hooks/useLiveProjects";
+import { copy } from "@/lib/data";
 import type { ProjectImages } from "@/lib/project-mapper";
 import type { Project } from "@/lib/types";
 import ProjectCard from "./ProjectCard";
@@ -38,7 +39,7 @@ function LabRow({ project }: { project: Project }) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 py-1.5 text-xs font-medium text-accent transition-colors duration-200 hover:text-foreground"
         >
-          Live demo
+          {copy.labels.liveDemo}
           <ArrowUpRightIcon className="h-3 w-3" />
         </a>
       )}
@@ -67,7 +68,7 @@ export default function ProjectList({ built, images }: { built: Project[]; image
 
       {labs.length > 0 && (
         <div className="mt-20">
-          <SectionHeading>Learning &amp; Labs</SectionHeading>
+          <SectionHeading>{copy.labels.labs}</SectionHeading>
           <Reveal>
             <ul className="group/labs divide-y divide-border border-y border-border">
               {labs.map((project) => (

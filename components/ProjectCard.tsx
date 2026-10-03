@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { copy } from "@/lib/data";
 import type { Project } from "@/lib/types";
 import { ArrowUpRightIcon } from "./icons";
 import TechIcon from "./TechIcon";
@@ -46,7 +47,7 @@ function DemoLink({ href }: { href: string }) {
       rel="noopener noreferrer"
       className="relative z-10 -my-2 inline-flex items-center gap-1 py-2 text-xs font-medium text-accent hover:text-foreground focus-visible:text-foreground"
     >
-      Live demo
+      {copy.labels.liveDemo}
       <ArrowUpRightIcon className="h-3 w-3" />
     </a>
   );
@@ -119,7 +120,7 @@ function CardBack({ project }: { project: Project }) {
               rel="noopener noreferrer"
               className="relative z-10 -my-2 inline-flex items-center gap-1 py-2 text-xs font-medium text-accent hover:text-foreground focus-visible:text-foreground"
             >
-              View on GitHub
+              {copy.labels.viewSource}
               <ArrowUpRightIcon className="h-3 w-3" />
             </a>
           ) : (

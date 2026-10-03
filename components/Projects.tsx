@@ -6,7 +6,7 @@ import SectionHeading from "./SectionHeading";
 export default async function Projects() {
   return (
     <section id="projects" className="scroll-mt-20 py-24">
-      <SectionHeading section="projects">Selected Projects</SectionHeading>
+      <SectionHeading section="projects" />
       <ProjectList built={await getProjects()} images={getProjectImages()} />
     </section>
   );

@@ -6,7 +6,7 @@ export default function Footer() {
       <p>
         © {new Date().getFullYear()} · {copy.footer}
       </p>
-      <p>Next.js · Tailwind CSS · Framer Motion</p>
+      <p>{copy.labels.builtWith}</p>
     </footer>
   );
 }

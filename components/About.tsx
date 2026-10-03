@@ -8,7 +8,7 @@ import Marquee from "./Marquee";
 export default function About() {
   return (
     <section id="about" className="scroll-mt-20 py-24">
-      <SectionHeading section="about">About</SectionHeading>
+      <SectionHeading section="about" />
 
       <Reveal>
         <dl className="mb-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-4">
@@ -53,7 +53,7 @@ export default function About() {
         <Reveal className="lg:col-span-2" delay={0.1}>
           <div className="spot-card rounded-lg border border-border bg-surface p-6">
             <h3 className="mb-4 text-sm font-semibold text-foreground">
-              Tech I work with
+              {copy.labels.techStack}
             </h3>
             <dl className="space-y-4">
               {Object.entries(techStack).map(([category, items]) => (
@@ -81,7 +81,7 @@ export default function About() {
 
       <Reveal delay={0.1}>
         <div className="mt-14">
-          <Marquee label="Technologies I work with">
+          <Marquee label={copy.labels.techStack}>
             {Object.values(techStack)
               .flat()
               .map((item) => (

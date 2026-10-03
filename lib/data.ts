@@ -58,7 +58,6 @@ export const regions: Place[] = [
 
 export const copy: SiteCopy = {
   hero: {
-    eyebrow: "Software Engineer",
     headlineLead: "I build",
     headlinePhrases: [
       "software for how businesses actually run.",
@@ -81,7 +80,15 @@ export const copy: SiteCopy = {
     copyEmail: "Copy email",
     copied: "Copied",
   },
-  footer: "Designed & built by Montaser Ismail",
+  footer: `Designed & built by ${profile.name}`,
+  labels: {
+    techStack: "Tech I work with",
+    education: "Education",
+    labs: "Learning & Labs",
+    liveDemo: "Live demo",
+    viewSource: "View on GitHub",
+    builtWith: "Next.js · Tailwind CSS · Framer Motion",
+  },
   metaDescription:
     "Full-stack software engineer building enterprise web platforms: scheduling systems, procurement tools and real-time APIs with React, Angular, Node.js and NestJS.",
 };

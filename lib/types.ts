@@ -37,7 +37,6 @@ export interface Place {
 /** Page copy that isn't a list of records: hero, about and contact text. */
 export interface SiteCopy {
   hero: {
-    eyebrow: string;
     /** Fixed start of the headline, followed by the typed phrases in turn. */
     headlineLead: string;
     headlinePhrases: string[];
@@ -47,6 +46,8 @@ export interface SiteCopy {
   about: string[];
   contact: { eyebrow: string; title: string; body: string; cta: string; copyEmail: string; copied: string };
   footer: string;
+  /** Short fixed labels used around the page. */
+  labels: { techStack: string; education: string; labs: string; liveDemo: string; viewSource: string; builtWith: string };
   metaDescription: string;
 }
 
