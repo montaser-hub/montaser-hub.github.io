@@ -1,5 +1,7 @@
 import Reveal from "./Reveal";
 import { copy, profile } from "@/lib/data";
+import Magnetic from "./Magnetic";
+import RevealWords from "./RevealWords";
 
 export default function Contact() {
   return (
@@ -9,22 +11,26 @@ export default function Contact() {
     >
       <Reveal>
         <p className="font-mono text-sm text-accent">{copy.contact.eyebrow}</p>
-        <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {copy.contact.title}
+        <h2 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <RevealWords text={copy.contact.title} />
         </h2>
         <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-muted">{copy.contact.body}</p>
-        <a
-          href={`mailto:${profile.email}`}
-          className="mt-10 inline-block rounded-md border border-accent px-8 py-4 text-sm font-medium text-accent transition-colors hover:bg-accent/10"
-        >
-          {copy.contact.cta}
-        </a>
+        <div className="mt-10">
+          <Magnetic>
+            <a
+              href={`mailto:${profile.email}`}
+              className="inline-block rounded-md bg-accent px-8 py-4 text-sm font-semibold text-background"
+            >
+              {copy.contact.cta}
+            </a>
+          </Magnetic>
+        </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted">
-          <a href={`mailto:${profile.email}`} className="link-underline">
+          <a href={`mailto:${profile.email}`} className="link-underline py-2">
             {profile.email}
           </a>
-          <a href={profile.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline">
+          <a href={profile.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline py-2">
             {profile.phoneDisplay}
           </a>
         </div>

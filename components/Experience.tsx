@@ -1,16 +1,19 @@
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
+import Timeline from "./Timeline";
 import { experience, education } from "@/lib/data";
 
 export default function Experience() {
   return (
     <section id="experience" className="scroll-mt-20 py-24">
-      <SectionHeading>Experience</SectionHeading>
+      <SectionHeading section="experience">Experience</SectionHeading>
 
-      <div className="space-y-10">
+      <Timeline>
+        <div className="space-y-12">
         {experience.map((job, i) => (
           <Reveal key={job.company} delay={Math.min(i * 0.08, 0.2)}>
-            <div className="grid gap-2 sm:grid-cols-[13rem_1fr] sm:gap-6">
+            <div className="relative grid gap-2 sm:grid-cols-[11rem_1fr] sm:gap-6">
+              <span aria-hidden="true" className="timeline-dot" />
               <div>
                 <p className="font-mono text-xs text-muted-dim">
                   {job.start} — {job.end}
@@ -36,7 +39,8 @@ export default function Experience() {
             </div>
           </Reveal>
         ))}
-      </div>
+        </div>
+      </Timeline>
 
       <Reveal delay={0.1}>
         <div className="mt-14 border-t border-border pt-10">

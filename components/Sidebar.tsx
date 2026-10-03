@@ -1,5 +1,5 @@
 import { profile } from "@/lib/data";
-import { navLinks } from "@/lib/sections";
+import SidebarNav from "./SidebarNav";
 import { GithubIcon, LinkedinIcon, WhatsappIcon, MailIcon } from "./icons";
 
 const socials = [
@@ -11,34 +11,21 @@ const socials = [
 
 export default function Sidebar() {
   return (
-    <header className="px-6 pt-10 pb-6 sm:px-10 lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[19rem] lg:flex-col lg:justify-between lg:px-0 lg:py-20 lg:pl-12 lg:pr-8 xl:w-[22rem] xl:pl-24">
+    <header className="flex items-end justify-between gap-4 px-6 pt-8 pb-4 sm:px-10 lg:fixed lg:inset-y-0 lg:left-0 lg:w-[19rem] lg:flex-col lg:items-stretch lg:justify-between lg:px-0 lg:py-20 lg:pl-12 lg:pr-8 xl:w-[22rem] xl:pl-24">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="whitespace-nowrap text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           <a href="#top">{profile.name}</a>
         </h1>
-        <p className="mt-2 text-base font-medium text-accent">{profile.title}</p>
-        <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
+        <p className="mt-1 text-sm font-medium text-accent sm:text-base lg:mt-2">{profile.title}</p>
+        {/* The hero repeats this on small screens, so it only shows beside it from lg up. */}
+        <p className="mt-4 hidden max-w-xs text-sm leading-relaxed text-muted lg:block">
           {profile.tagline}
         </p>
 
-        <nav className="mt-12 hidden lg:block">
-          <ul className="space-y-4">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="group flex items-center gap-3 text-sm font-medium text-muted-dim transition-colors hover:text-foreground"
-                >
-                  <span className="h-px w-8 bg-muted-dim transition-all group-hover:w-12 group-hover:bg-accent" />
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <SidebarNav />
       </div>
 
-      <div className="mt-10 flex gap-5 lg:mt-0">
+      <div className="flex gap-1 lg:-ml-2.5">
         {socials.map(({ href, label, icon: Icon }) => (
           <a
             key={label}
@@ -46,7 +33,7 @@ export default function Sidebar() {
             target={href.startsWith("http") ? "_blank" : undefined}
             rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
             aria-label={label}
-            className="text-muted transition-colors hover:text-accent"
+            className="rounded-md p-2.5 text-muted transition-colors duration-200 hover:text-accent"
           >
             <Icon className="h-5 w-5" />
           </a>

@@ -28,6 +28,13 @@ export interface SiteCopy {
   metaDescription: string;
 }
 
+/** A headline number for the About section; `value` counts up when it scrolls into view. */
+export interface Metric {
+  value: number;
+  suffix?: string;
+  label: string;
+}
+
 export interface FocusArea {
   title: string;
   description: string;

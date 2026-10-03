@@ -1,12 +1,28 @@
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
-import { copy, focusAreas, techStack } from "@/lib/data";
+import { copy, focusAreas, metrics, techStack } from "@/lib/data";
+import CountUp from "./CountUp";
+import Marquee from "./Marquee";
 import TechIcon from "./TechIcon";
 
 export default function About() {
   return (
     <section id="about" className="scroll-mt-20 py-24">
-      <SectionHeading>About</SectionHeading>
+      <SectionHeading section="about">About</SectionHeading>
+
+      <Reveal>
+        <dl className="mb-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-4">
+          {metrics.map((metric) => (
+            // Reversed so the number reads first while the label stays the <dt>.
+            <div key={metric.label} className="flex flex-col-reverse bg-surface p-5">
+              <dt className="mt-1 text-xs leading-snug text-muted-dim">{metric.label}</dt>
+              <dd className="text-3xl font-semibold tracking-tight text-foreground">
+                <CountUp value={metric.value} suffix={metric.suffix} />
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </Reveal>
 
       <div className="grid gap-12 lg:grid-cols-5">
         <Reveal className="lg:col-span-3" delay={0.05}>
@@ -58,6 +74,21 @@ export default function About() {
           </div>
         </Reveal>
       </div>
+
+      <Reveal delay={0.1}>
+        <div className="mt-14">
+          <Marquee label="Technologies I work with">
+            {Object.values(techStack)
+              .flat()
+              .map((item) => (
+                <span key={item} className="inline-flex items-center gap-2 font-mono text-sm text-muted-dim">
+                  <TechIcon tech={item} className="h-4 w-4" />
+                  {item}
+                </span>
+              ))}
+          </Marquee>
+        </div>
+      </Reveal>
     </section>
   );
 }

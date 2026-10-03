@@ -6,6 +6,7 @@ import type {
   EducationEntry,
   CaseStudy,
   SiteCopy,
+  Metric,
 } from "./types";
 
 export const profile: Profile = {
@@ -50,6 +51,17 @@ export const copy: SiteCopy = {
   metaDescription:
     "Full-stack software engineer building enterprise web platforms: scheduling systems, procurement tools and real-time APIs with React, Angular, Node.js and NestJS.",
 };
+
+/**
+ * Headline numbers, each traceable to the case studies below:
+ * tests = 566 (Tenders) + 639 (Trigo); endpoints = 136 (Trigo) + 168 (Qyser).
+ */
+export const metrics: Metric[] = [
+  { value: 1205, label: "automated tests written" },
+  { value: 304, label: "API endpoints shipped" },
+  { value: 4, label: "platforms built with teams" },
+  { value: 2, suffix: "+", label: "years in production code" },
+];
 
 export const focusAreas: FocusArea[] = [
   {

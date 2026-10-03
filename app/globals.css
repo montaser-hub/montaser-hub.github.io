@@ -72,11 +72,6 @@ body {
   transform-origin: left;
 }
 
-@media (max-width: 1024px) {
-  html {
-    scroll-padding-top: 5rem;
-  }
-}
 
 /* Project card flip — tech-stack face rotates to reveal a screenshot on hover/focus. */
 .flip-card {
@@ -158,6 +153,181 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .typewriter-caret {
+    display: none;
+  }
+}
+
+/* ── Motion and interaction details ───────────────────────────────────── */
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Cursor spotlight (components/Spotlight.tsx): a soft glow behind the content. */
+.spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(600px circle at var(--spot-x, 50%) var(--spot-y, 30%), rgb(246 130 31 / 0.07), transparent 70%);
+  transition: opacity 0.4s ease-out;
+}
+
+/* Cards light up along the border nearest the cursor. */
+.spot-card {
+  position: relative;
+}
+
+.spot-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(320px circle at var(--card-x, 50%) var(--card-y, 50%), rgb(246 130 31 / 0.7), transparent 60%);
+  /* Show the gradient only in the 1px ring, not over the card. */
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.25s ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .spotlight {
+    opacity: 1;
+  }
+
+  .spot-card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Experience timeline markers (components/Timeline.tsx). */
+.timeline-dot {
+  position: absolute;
+  left: -2rem;
+  top: 0.3rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 9999px;
+  border: 2px solid var(--accent);
+  background: var(--background);
+}
+
+/* Endless tech row (components/Marquee.tsx). */
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Scroll cue in the hero. */
+.scroll-cue-track {
+  position: relative;
+  width: 1px;
+  height: 2.5rem;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.scroll-cue-dot {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 40%;
+  background: var(--accent);
+  animation: scroll-cue 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes scroll-cue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(250%);
+  }
+}
+
+/* Full-size screenshot dialog (components/ZoomImage.tsx). */
+.zoom-dialog {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+}
+
+.zoom-dialog::backdrop {
+  background: rgb(5 7 10 / 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.zoom-dialog[open] {
+  animation: zoom-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .scroll-cue-dot,
+  .zoom-dialog[open] {
+    animation: none;
+  }
+
+  /* No motion, so let the row wrap instead of hiding what would scroll past. */
+  .marquee {
+    mask-image: none;
+  }
+
+  .marquee-track {
+    width: auto;
+    flex-wrap: wrap;
+  }
+
+  .marquee-group {
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+  }
+
+  .marquee-group[aria-hidden="true"] {
     display: none;
   }
 }

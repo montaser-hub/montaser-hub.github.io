@@ -1,14 +1,15 @@
-import Image from "next/image";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import { caseStudies } from "@/lib/data";
 import type { CaseStudy } from "@/lib/types";
 import { ArrowUpRightIcon } from "./icons";
 import TechIcon from "./TechIcon";
+import CountUp from "./CountUp";
+import ZoomImage from "./ZoomImage";
 
 function CaseStudyCard({ study, priority }: { study: CaseStudy; priority: boolean }) {
   return (
-    <article className="rounded-xl border border-border bg-surface p-6 sm:p-10">
+    <article className="spot-card rounded-xl border border-border bg-surface p-6 sm:p-10">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="font-mono text-xs uppercase tracking-wide text-accent">{study.context}</p>
@@ -23,7 +24,7 @@ function CaseStudyCard({ study, priority }: { study: CaseStudy; priority: boolea
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link-underline flex items-center gap-1 text-sm font-medium text-foreground"
+                className="link-underline flex items-center gap-1 py-1 text-sm font-medium text-foreground"
               >
                 {link.label}
                 <ArrowUpRightIcon className="h-3.5 w-3.5" />
@@ -32,7 +33,7 @@ function CaseStudyCard({ study, priority }: { study: CaseStudy; priority: boolea
           </div>
         ) : (
           study.note && (
-            <span className="rounded-full border border-border px-3 py-1 font-mono text-[0.7rem] uppercase tracking-wide text-muted-dim">
+            <span className="rounded-full border border-border px-3 py-1 font-mono text-xs uppercase tracking-wide text-muted-dim">
               {study.note}
             </span>
           )
@@ -43,16 +44,7 @@ function CaseStudyCard({ study, priority }: { study: CaseStudy; priority: boolea
 
       {study.image && (
         <figure className="mt-8">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border sm:aspect-[16/10]">
-            <Image
-              src={study.image}
-              alt={`Screenshot of ${study.name}`}
-              fill
-              priority={priority}
-              sizes="(min-width: 1280px) 800px, 100vw"
-              className="object-cover object-top"
-            />
-          </div>
+          <ZoomImage src={study.image} alt={`Screenshot of ${study.name}`} priority={priority} />
           {study.imageCaption && (
             <figcaption className="mt-2 text-xs text-muted-dim">{study.imageCaption}</figcaption>
           )}
@@ -74,7 +66,10 @@ function CaseStudyCard({ study, priority }: { study: CaseStudy; priority: boolea
               // Reversed so the number reads first while the label stays the <dt>.
               <div key={stat.label} className="flex flex-col-reverse">
                 <dt className="text-xs text-muted-dim">{stat.label}</dt>
-                <dd className="text-2xl font-semibold text-foreground">{stat.value}</dd>
+                <dd className="text-2xl font-semibold text-foreground">
+                  {/* Plain whole numbers count up; ratios and durations stay as written. */}
+                  {/^\d+$/.test(stat.value) ? <CountUp value={Number(stat.value)} /> : stat.value}
+                </dd>
               </div>
             ))}
           </dl>
@@ -99,7 +94,7 @@ function CaseStudyCard({ study, priority }: { study: CaseStudy; priority: boolea
 export default function FeaturedProject() {
   return (
     <section id="work" className="scroll-mt-20 py-24">
-      <SectionHeading>Featured Work</SectionHeading>
+      <SectionHeading section="work">Featured Work</SectionHeading>
 
       <div className="space-y-8">
         {caseStudies.map((study, i) => (

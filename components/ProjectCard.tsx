@@ -44,7 +44,7 @@ function DemoLink({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="relative z-10 inline-flex items-center gap-1 text-xs font-medium text-accent hover:text-foreground focus-visible:text-foreground"
+      className="relative z-10 -my-2 inline-flex items-center gap-1 py-2 text-xs font-medium text-accent hover:text-foreground focus-visible:text-foreground"
     >
       Live demo
       <ArrowUpRightIcon className="h-3 w-3" />
@@ -55,7 +55,7 @@ function DemoLink({ href }: { href: string }) {
 /** Context line such as "Client project · source private". */
 function Note({ children }: { children: string }) {
   return (
-    <p className="mt-1 font-mono text-[0.7rem] uppercase tracking-wide text-accent-dim">
+    <p className="mt-1 font-mono text-xs uppercase tracking-wide text-accent-dim">
       {children}
     </p>
   );
@@ -72,7 +72,7 @@ function CardFront({
   clamp?: boolean;
 }) {
   return (
-    <div className="flex h-full flex-col rounded-lg border border-border bg-surface p-6 transition-colors group-hover:border-muted-dim group-hover:bg-surface-hover">
+    <div className="spot-card flex h-full flex-col rounded-lg border border-border bg-surface p-6 transition-colors duration-200 group-hover:bg-surface-hover">
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-medium text-foreground">{project.name}</h3>
         {/* The arrow promises a link, so only show it when there is one. */}
@@ -117,7 +117,7 @@ function CardBack({ project }: { project: Project }) {
               href={project.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative z-10 inline-flex items-center gap-1 text-xs font-medium text-accent hover:text-foreground focus-visible:text-foreground"
+              className="relative z-10 -my-2 inline-flex items-center gap-1 py-2 text-xs font-medium text-accent hover:text-foreground focus-visible:text-foreground"
             >
               View on GitHub
               <ArrowUpRightIcon className="h-3 w-3" />

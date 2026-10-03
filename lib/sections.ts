@@ -12,5 +12,3 @@ export const sections = [
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];
-
-export const navLinks = sections.map(({ id, label }) => ({ href: `#${id}`, label }));
