@@ -10,6 +10,9 @@ import type { Project } from "./types";
  * dedicated case study elsewhere) and anything not meant as portfolio material.
  */
 export const EXCLUDED_REPOS = new Set([
+  // This site and my profile README are not projects to list on the site.
+  "montaser-hub.github.io",
+  "montaser-hub",
   "Portal",
   // Superseded: each of its sub-projects now has its own repo and card.
   "Web_Design",
