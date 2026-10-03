@@ -50,6 +50,66 @@ body {
   color: transparent;
 }
 
+/* Hero name: bright white easing into a warm accent at the end. */
+.text-gradient-hero {
+  background: linear-gradient(100deg, var(--foreground) 0%, var(--foreground) 55%, #ffb36b 85%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* "Available" pulse in the hero badge. */
+.status-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #34d399;
+}
+
+.status-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #34d399;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Primary button: a soft accent glow that grows on hover. */
+.cta-primary {
+  box-shadow: 0 0 0 0 rgb(246 130 31 / 0), 0 8px 24px -12px rgb(246 130 31 / 0.6);
+  transition: box-shadow 0.3s ease, background-color 0.2s ease;
+}
+
+.cta-primary:hover {
+  background: #ff9233;
+  box-shadow: 0 0 0 4px rgb(246 130 31 / 0.15), 0 12px 32px -10px rgb(246 130 31 / 0.7);
+}
+
+/* Back-to-top (components/BackToTop.tsx): neutral glass, accent only in the ring. */
+.back-to-top {
+  color: var(--foreground);
+  background: rgb(11 15 22 / 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.8);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.back-to-top:hover {
+  background: rgb(16 22 35 / 0.9);
+  box-shadow: 0 0 0 6px rgb(246 130 31 / 0.08), 0 10px 28px -10px rgb(246 130 31 / 0.35);
+}
+
 .link-underline {
   position: relative;
 }
@@ -222,6 +282,20 @@ h3 {
   background: var(--background);
 }
 
+/* The current role: filled marker with a slow halo. */
+.timeline-dot--active {
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgb(246 130 31 / 0.5);
+  animation: halo 2.4s ease-out infinite;
+}
+
+@keyframes halo {
+  70%,
+  100% {
+    box-shadow: 0 0 0 10px rgb(246 130 31 / 0);
+  }
+}
+
 /* Endless tech row (components/Marquee.tsx). */
 .marquee {
   overflow: hidden;
@@ -251,30 +325,46 @@ h3 {
   }
 }
 
-/* Scroll cue in the hero. */
-.scroll-cue-track {
+/* Mouse-shaped scroll cue in the hero. */
+.scroll-mouse {
   position: relative;
-  width: 1px;
-  height: 2.5rem;
-  background: var(--border);
-  overflow: hidden;
+  display: block;
+  width: 24px;
+  height: 38px;
+  border: 1.5px solid var(--muted-dim);
+  border-radius: 9999px;
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
-.scroll-cue-dot {
+.scroll-mouse:hover {
+  border-color: var(--foreground);
+  transform: translateY(2px);
+}
+
+.scroll-mouse-wheel {
   position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 40%;
+  left: 50%;
+  top: 7px;
+  width: 3px;
+  height: 7px;
+  margin-left: -1.5px;
+  border-radius: 9999px;
   background: var(--accent);
-  animation: scroll-cue 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: scroll-wheel 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-@keyframes scroll-cue {
-  from {
-    transform: translateY(-100%);
+@keyframes scroll-wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
   }
-  to {
-    transform: translateY(250%);
+  70% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
   }
 }
 
@@ -307,7 +397,9 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
-  .scroll-cue-dot,
+  .scroll-mouse-wheel,
+  .status-dot::after,
+  .timeline-dot--active,
   .zoom-dialog[open] {
     animation: none;
   }

@@ -13,7 +13,7 @@ export const profile: Profile = {
   name: "Montaser Ismail",
   title: "Software Engineer",
   tagline:
-    "Full-stack engineer with 2+ years building enterprise-grade web platforms — from metadata-driven React UIs to Node.js/NestJS services handling six-figure record aggregations.",
+    "Full-stack engineer building enterprise platforms — metadata-driven React UIs and Node.js/NestJS services that hold up at 100K+ records.",
   location: "Egypt",
   email: "montaserismail20@gmail.com",
   phoneDisplay: "+20 109 288 9329",
@@ -21,11 +21,12 @@ export const profile: Profile = {
   github: "https://github.com/montaser-hub",
   linkedin: "https://www.linkedin.com/in/montaser-ismail/",
   site: "https://montaser-hub.github.io",
+  availability: "Open to full-stack roles",
 };
 
 export const copy: SiteCopy = {
   hero: {
-    eyebrow: "Hi, my name is",
+    eyebrow: "Open to full-stack roles · Remote",
     headlineLead: "I build",
     headlinePhrases: [
       "software for how businesses actually run.",
@@ -37,17 +38,16 @@ export const copy: SiteCopy = {
     secondaryCta: "Get in touch",
   },
   about: [
-    "I'm a full-stack engineer who came up through the ITI MEARN bootcamp and now builds software for how enterprise teams actually operate — metadata-driven UIs, approval workflows, and backend services that hold up under real load.",
-    "At Arkaan International Group I build a rendering engine that turns backend JSON schemas directly into reusable React components and forms, cutting manual frontend work dramatically. Before that, at Qyser Tech, I worked backend — Node.js services and MongoDB aggregations processing 100K+ records to power internal reporting and HR approvals.",
-    "The case studies below show that work: a tendering platform, a ride-hailing backend, a residency scheduling API and SmartShift, a hospital shift-scheduling platform.",
+    "I build software for how enterprise teams actually operate: metadata-driven UIs, approval workflows, and backend services that hold up under real load.",
+    "At Arkaan International I build a rendering engine that turns backend JSON schemas into React screens and forms. Before that, at Qyser Tech, I wrote Node.js services and MongoDB aggregations behind reporting and HR approvals.",
   ],
   contact: {
-    eyebrow: "What's next?",
-    title: "Let's work together",
-    body: "I'm open to full-stack roles and freelance projects that need someone comfortable across the whole stack. Reach out and I'll get back to you.",
+    eyebrow: "Contact",
+    title: "Let's build something",
+    body: "Open to full-stack roles and freelance projects. I usually reply within a day.",
     cta: "Say hello",
   },
-  footer: "Designed & built by Montaser Ismail.",
+  footer: "Designed & built by Montaser Ismail",
   metaDescription:
     "Full-stack software engineer building enterprise web platforms: scheduling systems, procurement tools and real-time APIs with React, Angular, Node.js and NestJS.",
 };
@@ -65,53 +65,24 @@ export const metrics: Metric[] = [
 
 export const focusAreas: FocusArea[] = [
   {
-    title: "Full-stack product engineering",
-    description:
-      "Designing and shipping complete features across React/Angular frontends and Node.js/NestJS APIs — not just UI, not just backend.",
+    title: "Full-stack delivery",
+    description: "Complete features across React/Angular frontends and Node.js/NestJS APIs.",
   },
   {
-    title: "Enterprise data & workflows",
-    description:
-      "Modeling multi-role systems — departments, permissions, scheduling, approvals — with MongoDB aggregations that hold up at 100K+ records.",
+    title: "Enterprise workflows",
+    description: "Roles, permissions, scheduling and approvals, on MongoDB aggregations that scale.",
   },
   {
-    title: "Testing & reliability",
-    description:
-      "Writing the tests alongside the feature: 639 unit tests on a NestJS ride-hailing backend and 566 on a React procurement front-end (Jest, Vitest, Jasmine, Supertest), so features stay correct as the codebase grows.",
+    title: "Tested by default",
+    description: "Tests ship with the feature (Jest, Vitest, Jasmine, Supertest), so it stays correct.",
   },
 ];
 
 export const techStack: TechStack = {
-  Frontend: [
-    "React",
-    "Next.js",
-    "Angular",
-    "TypeScript",
-    "Redux Toolkit",
-    "Tailwind CSS",
-    "SASS",
-    "Framer Motion",
-  ],
-  Backend: [
-    "Node.js",
-    "NestJS",
-    "Express",
-    "GraphQL",
-    "REST APIs",
-    "Redis",
-    "Message Queues",
-    "JWT Auth",
-  ],
-  Data: ["MongoDB", "Aggregations & Indexing", "PostgreSQL", "MySQL", "SQL Server", "AWS S3"],
-  "Practices & Tooling": [
-    "Docker",
-    "CI/CD",
-    "Nx Monorepos",
-    "SOLID Principles",
-    "Design Patterns",
-    "Jasmine / Supertest",
-    "Karma",
-  ],
+  Frontend: ["React", "Next.js", "Angular", "TypeScript", "Redux Toolkit", "Tailwind CSS", "Framer Motion"],
+  Backend: ["Node.js", "NestJS", "Express", "GraphQL", "Socket.io", "Redis", "BullMQ", "JWT Auth"],
+  Data: ["MongoDB", "PostgreSQL", "Prisma", "MySQL", "SQL Server", "AWS S3"],
+  "Testing & DevOps": ["Jest", "Vitest", "Jasmine", "Docker", "Nx Monorepos", "CI/CD"],
 };
 
 export const experience: Experience[] = [

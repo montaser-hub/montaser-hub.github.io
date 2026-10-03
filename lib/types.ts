@@ -10,6 +10,8 @@ export interface Profile {
   linkedin: string;
   /** Public URL of this portfolio, once it is deployed. */
   site?: string;
+  /** One line on what I'm open to, shown on my GitHub profile. */
+  availability: string;
 }
 
 /** Page copy that isn't a list of records: hero, about and contact text. */

@@ -17,9 +17,13 @@ export default function Sidebar() {
           <a href="#top">{profile.name}</a>
         </h1>
         <p className="mt-1 text-sm font-medium text-accent sm:text-base lg:mt-2">{profile.title}</p>
-        {/* The hero repeats this on small screens, so it only shows beside it from lg up. */}
-        <p className="mt-4 hidden max-w-xs text-sm leading-relaxed text-muted lg:block">
-          {profile.tagline}
+        {/* The hero carries the tagline, so the sidebar keeps to a short status line. */}
+        <p className="mt-4 hidden items-center gap-2 font-mono text-xs text-muted-dim lg:flex">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-3.5 w-3.5" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+          {profile.location} · Remote-friendly
         </p>
 
         <SidebarNav />

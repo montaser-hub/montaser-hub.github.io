@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ConnectGlobe from "./ConnectGlobe";
 import Typewriter from "./Typewriter";
+import Magnetic from "./Magnetic";
 import { copy, profile } from "@/lib/data";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -47,14 +48,18 @@ export default function Hero() {
         style={{ y: textY, opacity: textOpacity }}
         className="relative z-10 max-w-2xl"
       >
-        <motion.p variants={line} className="font-mono text-sm text-accent">
+        <motion.p
+          variants={line}
+          className="inline-flex items-center gap-2.5 rounded-full border border-border bg-surface/70 px-3.5 py-1.5 font-mono text-xs text-muted backdrop-blur"
+        >
+          <span className="status-dot" aria-hidden="true" />
           {copy.hero.eyebrow}
         </motion.p>
         <motion.h2
           variants={line}
-          className="mt-3 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+          className="text-gradient-hero mt-6 pb-1 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
         >
-          {profile.name}.
+          {profile.name}
         </motion.h2>
         <motion.h3
           variants={line}
@@ -66,33 +71,45 @@ export default function Hero() {
         <motion.p variants={line} className="mt-6 max-w-lg text-base leading-relaxed text-muted">
           {profile.tagline}
         </motion.p>
-        <motion.div variants={line} className="mt-10 flex flex-wrap gap-4">
-          <a
-            href="#work"
-            className="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-background transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0"
-          >
-            {copy.hero.primaryCta}
-          </a>
+        <motion.div variants={line} className="mt-10 flex flex-wrap items-center gap-4">
+          <Magnetic strength={0.2}>
+            <a
+              href="#work"
+              className="cta-primary group inline-flex items-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-semibold text-background"
+            >
+              {copy.hero.primaryCta}
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </a>
+          </Magnetic>
           <a
             href="#contact"
-            className="rounded-md border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent hover:text-accent"
+            className="rounded-md border border-border bg-surface/40 px-6 py-3 text-sm font-medium text-foreground backdrop-blur transition-colors duration-200 hover:border-muted-dim hover:bg-surface-hover"
           >
             {copy.hero.secondaryCta}
           </a>
         </motion.div>
       </motion.div>
 
-      <motion.a
-        href="#about"
-        aria-label="Scroll to About"
-        style={{ opacity: cueOpacity }}
-        className="scroll-cue absolute bottom-4 left-0 hidden items-center gap-3 font-mono text-xs text-muted-dim transition-colors duration-200 hover:text-accent sm:flex"
-      >
-        <span className="scroll-cue-track">
-          <span className="scroll-cue-dot" />
-        </span>
-        Scroll
-      </motion.a>
+      {/* Mouse-shaped scroll cue: the wheel drifts down and fades, on a loop. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-6 hidden justify-center sm:flex">
+        <motion.a
+          href="#about"
+          aria-label="Scroll to About"
+          style={{ opacity: cueOpacity }}
+          className="scroll-mouse pointer-events-auto"
+        >
+          <span className="scroll-mouse-wheel" aria-hidden="true" />
+        </motion.a>
+      </div>
     </section>
   );
 }

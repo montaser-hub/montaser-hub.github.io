@@ -13,7 +13,10 @@ export default function Experience() {
         {experience.map((job, i) => (
           <Reveal key={job.company} delay={Math.min(i * 0.08, 0.2)}>
             <div className="relative grid gap-2 sm:grid-cols-[11rem_1fr] sm:gap-6">
-              <span aria-hidden="true" className="timeline-dot" />
+              <span
+                aria-hidden="true"
+                className={`timeline-dot ${job.end === "Present" ? "timeline-dot--active" : ""}`}
+              />
               <div>
                 <p className="font-mono text-xs text-muted-dim">
                   {job.start} — {job.end}

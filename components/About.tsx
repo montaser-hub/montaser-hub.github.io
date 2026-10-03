@@ -2,7 +2,6 @@ import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import { copy, focusAreas, metrics, techStack } from "@/lib/data";
 import CountUp from "./CountUp";
-import Marquee from "./Marquee";
 import TechIcon from "./TechIcon";
 
 export default function About() {
@@ -14,9 +13,12 @@ export default function About() {
         <dl className="mb-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-4">
           {metrics.map((metric) => (
             // Reversed so the number reads first while the label stays the <dt>.
-            <div key={metric.label} className="flex flex-col-reverse bg-surface p-5">
+            <div
+              key={metric.label}
+              className="group flex flex-col-reverse bg-surface p-5 transition-colors duration-300 hover:bg-surface-hover"
+            >
               <dt className="mt-1 text-xs leading-snug text-muted-dim">{metric.label}</dt>
-              <dd className="text-3xl font-semibold tracking-tight text-foreground">
+              <dd className="text-3xl font-semibold tracking-tight text-foreground transition-colors duration-300 group-hover:text-accent">
                 <CountUp value={metric.value} suffix={metric.suffix} />
               </dd>
             </div>
@@ -33,9 +35,10 @@ export default function About() {
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
-            {focusAreas.map((area) => (
-              <div key={area.title}>
-                <h3 className="text-sm font-semibold text-foreground">
+            {focusAreas.map((area, i) => (
+              <div key={area.title} className="border-t border-border pt-4">
+                <p className="font-mono text-xs text-accent">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="mt-2 text-sm font-semibold text-foreground">
                   {area.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -47,7 +50,7 @@ export default function About() {
         </Reveal>
 
         <Reveal className="lg:col-span-2" delay={0.1}>
-          <div className="rounded-lg border border-border bg-surface p-6">
+          <div className="spot-card rounded-lg border border-border bg-surface p-6">
             <h3 className="mb-4 text-sm font-semibold text-foreground">
               Tech I work with
             </h3>
@@ -61,7 +64,7 @@ export default function About() {
                     {items.map((item) => (
                       <span
                         key={item}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-hover px-3 py-1 text-xs text-muted"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-hover px-3 py-1 text-xs text-muted transition-all duration-200 hover:-translate-y-0.5 hover:border-muted-dim hover:text-foreground"
                       >
                         <TechIcon tech={item} className="h-3.5 w-3.5" />
                         {item}
@@ -74,21 +77,6 @@ export default function About() {
           </div>
         </Reveal>
       </div>
-
-      <Reveal delay={0.1}>
-        <div className="mt-14">
-          <Marquee label="Technologies I work with">
-            {Object.values(techStack)
-              .flat()
-              .map((item) => (
-                <span key={item} className="inline-flex items-center gap-2 font-mono text-sm text-muted-dim">
-                  <TechIcon tech={item} className="h-4 w-4" />
-                  {item}
-                </span>
-              ))}
-          </Marquee>
-        </div>
-      </Reveal>
     </section>
   );
 }
