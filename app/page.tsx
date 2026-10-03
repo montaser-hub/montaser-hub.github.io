@@ -24,7 +24,7 @@ export default function Home() {
       <Spotlight />
       <BackToTop />
       <Sidebar />
-      <main id="content" className="px-6 sm:px-10 lg:ml-[19rem] lg:px-16 xl:ml-[22rem] xl:px-24">
+      <main id="content" className="px-6 sm:px-10 lg:ml-64 lg:px-12 xl:ml-72 xl:px-16">
         <MobileNav />
         <Hero />
         <About />

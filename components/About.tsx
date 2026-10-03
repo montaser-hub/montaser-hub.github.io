@@ -3,6 +3,7 @@ import SectionHeading from "./SectionHeading";
 import { copy, focusAreas, metrics, techStack } from "@/lib/data";
 import CountUp from "./CountUp";
 import TechIcon from "./TechIcon";
+import Marquee from "./Marquee";
 
 export default function About() {
   return (
@@ -77,6 +78,22 @@ export default function About() {
           </div>
         </Reveal>
       </div>
+
+      <Reveal delay={0.1}>
+        <div className="mt-14">
+          <Marquee label="Technologies I work with">
+            {Object.values(techStack)
+              .flat()
+              .map((item) => (
+                <span key={item} className="inline-flex items-center gap-2 font-mono text-sm text-muted-dim transition-colors duration-200 hover:text-foreground">
+                  <TechIcon tech={item} className="h-4 w-4 text-accent" />
+                  {item}
+                </span>
+              ))}
+          </Marquee>
+        </div>
+      </Reveal>
     </section>
   );
 }
+

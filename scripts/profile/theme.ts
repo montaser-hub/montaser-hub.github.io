@@ -10,18 +10,15 @@ export interface Palette {
   fg: string;
   muted: string;
   dim: string;
-  violet: string;
-  cyan: string;
-  pink: string;
+  accent: string;
 }
 
+// Neutral surfaces and one accent: the content and the brand icons carry the colour.
 export const DARK: Palette = {
-  bg: "#0b1020", panel: "#121a33", border: "#232f55", fg: "#e8ecf8", muted: "#a3aecb", dim: "#7482a8",
-  violet: "#8b6cff", cyan: "#22d3ee", pink: "#f472b6",
+  bg: "#0d1117", panel: "#151b23", border: "#2a313c", fg: "#e6edf3", muted: "#9da7b3", dim: "#7d8590", accent: "#4c8dff",
 };
 export const LIGHT: Palette = {
-  bg: "#ffffff", panel: "#f5f7fc", border: "#d5dceb", fg: "#0f172a", muted: "#475569", dim: "#64748b",
-  violet: "#5b3df5", cyan: "#0891b2", pink: "#db2777",
+  bg: "#ffffff", panel: "#f6f8fa", border: "#d0d7de", fg: "#1f2328", muted: "#59636e", dim: "#6e7781", accent: "#0969da",
 };
 
 export const FONT_SANS = `ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif`;
@@ -35,9 +32,8 @@ function rules(c: Palette): string {
   return `
     .bg { fill: ${c.bg}; } .panel { fill: ${c.panel}; } .edge { stroke: ${c.border}; }
     .fg { fill: ${c.fg}; } .muted { fill: ${c.muted}; } .dim { fill: ${c.dim}; }
-    .violet { fill: ${c.violet}; } .cyan { fill: ${c.cyan}; } .pink { fill: ${c.pink}; }
-    .stop-violet { stop-color: ${c.violet}; } .stop-cyan { stop-color: ${c.cyan}; } .stop-pink { stop-color: ${c.pink}; }
-    .stop-fg { stop-color: ${c.fg}; }`;
+    .accent { fill: ${c.accent}; } .accent-line { stroke: ${c.accent}; }
+    .stop-accent { stop-color: ${c.accent}; } .stop-fg { stop-color: ${c.fg}; }`;
 }
 
 /** The <style> body shared by every graphic; `extra` holds its own rules. */
@@ -50,12 +46,6 @@ export function styles(extra = ""): string {
     ${extra}
   </style>`;
 }
-
-/** Gradient definitions used across the graphics. */
-export const GRADIENTS = `
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" class="stop-violet"/><stop offset="0.55" class="stop-cyan"/><stop offset="1" class="stop-pink"/>
-    </linearGradient>`;
 
 export const escapeXml = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");

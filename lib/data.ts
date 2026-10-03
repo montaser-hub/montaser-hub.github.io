@@ -26,7 +26,7 @@ export const profile: Profile = {
 
 export const copy: SiteCopy = {
   hero: {
-    eyebrow: "Open to full-stack roles · Remote",
+    eyebrow: "Software Engineer",
     headlineLead: "I build",
     headlinePhrases: [
       "software for how businesses actually run.",
@@ -189,7 +189,7 @@ export const caseStudies: CaseStudy[] = [
       { value: "136", label: "documented endpoints" },
       { value: "17 / 24", label: "commits are mine" },
     ],
-    tech: ["NestJS", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Socket.io"],
+    tech: ["NestJS", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Socket.io", "Jest"],
     note: "Source private",
     image: "/projects/trigo.webp",
     imageCaption: "The API's Swagger documentation: 21 areas, 136 endpoints.",

@@ -2,7 +2,7 @@
  * Row of stat tiles whose digits roll into place like an odometer: each digit
  * is a column of 0–9 that slides up to its value inside a clipped window.
  */
-import { EASE, GRADIENTS, escapeXml, styles, svg } from "./theme.ts";
+import { EASE, escapeXml, styles, svg } from "./theme.ts";
 
 export interface Stat {
   value: number;
@@ -36,7 +36,7 @@ export function metrics(stats: Stat[]): string {
           const id = `digit-${clipId++}`;
           const column = Array.from({ length: 10 }, (_, n) => `<text x="${x + DIGIT_WIDTH / 2}" y="${78 + n * DIGIT_HEIGHT}" text-anchor="middle" font-size="50" font-weight="800">${n}</text>`).join("");
           const out = `<clipPath id="${id}"><rect x="${x - 2}" y="34" width="${DIGIT_WIDTH + 4}" height="${DIGIT_HEIGHT}"/></clipPath>
-    <g clip-path="url(#${id})"><g class="roll roll-${character}" style="animation-delay: ${(0.2 + tile * 0.15 + position * 0.08).toFixed(2)}s" fill="url(#accent)">${column}</g></g>`;
+    <g clip-path="url(#${id})"><g class="fg roll roll-${character}" style="animation-delay: ${(0.2 + tile * 0.15 + position * 0.08).toFixed(2)}s">${column}</g></g>`;
           x += DIGIT_WIDTH;
           return out;
         })
@@ -63,6 +63,5 @@ export function metrics(stats: Stat[]): string {
     }`;
 
   return svg(WIDTH, HEIGHT, stats.map((s) => `${s.value.toLocaleString("en-US")}${s.suffix ?? ""} ${s.label}`).join(", "), `  ${styles(css)}
-  <defs>${GRADIENTS}</defs>
   ${tiles}`);
 }

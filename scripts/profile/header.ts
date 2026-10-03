@@ -1,10 +1,10 @@
 /**
  * Hero banner: status chip, name with a moving sheen, a typewriter line, and
- * technology icons orbiting on three rings, over slowly drifting colour glows.
+ * technology icons orbiting on three rings, over two faint drifting glows.
  * Everything is CSS or SMIL inside the SVG, so it plays inside an <img>.
  */
 import { drawIcon, icon } from "./icons.ts";
-import { EASE, FONT_MONO, GRADIENTS, MONO_ADVANCE, escapeXml, styles, svg } from "./theme.ts";
+import { EASE, FONT_MONO, MONO_ADVANCE, escapeXml, styles, svg } from "./theme.ts";
 
 const WIDTH = 1200;
 const HEIGHT = 380;
@@ -55,8 +55,8 @@ function typewriter(phrases: string[], x: number, y: number, fontSize: number): 
     .map((phrase, i) => {
       const width = (phrase.length * charWidth).toFixed(1);
       return `<clipPath id="clip-${i}"><rect class="clip-${i}" x="${x}" y="${y - fontSize}" width="${width}" height="${fontSize * 1.5}"/></clipPath>
-  <text class="mono typed${i === 0 ? " typed-first" : ""}" fill="url(#accent)" clip-path="url(#clip-${i})" x="${x}" y="${y}" font-size="${fontSize}" textLength="${width}" lengthAdjust="spacing">${escapeXml(phrase)}</text>
-  <rect class="caret caret-${i} cyan" x="${x + 2}" y="${y - fontSize * 0.85}" width="2.5" height="${fontSize * 1.1}"/>`;
+  <text class="mono accent typed${i === 0 ? " typed-first" : ""}" clip-path="url(#clip-${i})" x="${x}" y="${y}" font-size="${fontSize}" textLength="${width}" lengthAdjust="spacing">${escapeXml(phrase)}</text>
+  <rect class="caret caret-${i} accent" x="${x + 2}" y="${y - fontSize * 0.85}" width="2.5" height="${fontSize * 1.1}"/>`;
     })
     .join("\n  ");
 
@@ -104,7 +104,7 @@ function orbits(rings: string[][], cx: number, cy: number): { css: string; body:
   return {
     css,
     body: `${body}
-  <circle cx="${cx}" cy="${cy}" r="26" fill="url(#accent)" opacity="0.18"/>
+  <circle class="accent" cx="${cx}" cy="${cy}" r="26" opacity="0.16"/>
   <text class="mono fg" x="${cx}" y="${cy + 6}" text-anchor="middle" font-size="17" font-weight="700">&lt;/&gt;</text>`,
   };
 }
@@ -121,12 +121,10 @@ export function header(content: HeaderContent): string {
     .glow { transform-box: fill-box; transform-origin: center; }
     .glow-1 { animation: drift-1 16s ease-in-out infinite alternate; }
     .glow-2 { animation: drift-2 20s ease-in-out infinite alternate; }
-    .glow-3 { animation: drift-3 24s ease-in-out infinite alternate; }
     .rise { animation: rise 0.8s ${EASE} backwards; }
     .beat { transform-box: fill-box; transform-origin: center; animation: beat 2.4s ease-out infinite; }
     @keyframes drift-1 { to { transform: translate(140px, 60px) scale(1.15); } }
     @keyframes drift-2 { to { transform: translate(-160px, -40px) scale(0.9); } }
-    @keyframes drift-3 { to { transform: translate(90px, -70px) scale(1.2); } }
     @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes beat { 0% { transform: scale(1); opacity: 0.7; } 70%, 100% { transform: scale(2.6); opacity: 0; } }
     @keyframes turn { to { transform: rotate(360deg); } }
@@ -143,7 +141,7 @@ export function header(content: HeaderContent): string {
     HEIGHT,
     `${content.name}, ${content.subtitle}. ${lead}${content.phrases[0]}`,
     `  ${styles(css)}
-  <defs>${GRADIENTS}
+  <defs>
     <clipPath id="frame"><rect width="${WIDTH}" height="${HEIGHT}" rx="20"/></clipPath>
     <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="70"/></filter>
     <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle class="dim" cx="2" cy="2" r="1.1"/></pattern>
@@ -151,17 +149,16 @@ export function header(content: HeaderContent): string {
     <mask id="dots-mask"><rect width="${WIDTH}" height="${HEIGHT}" fill="url(#fade)"/></mask>
     <!-- The name's fill: text colour with a band of colour that sweeps across (a colour change, not movement). -->
     <linearGradient id="name" gradientUnits="userSpaceOnUse" x1="-400" y1="0" x2="0" y2="0">
-      <stop offset="0" class="stop-fg"/><stop offset="0.5" class="stop-cyan"/><stop offset="1" class="stop-fg"/>
+      <stop offset="0" class="stop-fg"/><stop offset="0.5" class="stop-accent"/><stop offset="1" class="stop-fg"/>
       <animate attributeName="x1" values="-400;1200" dur="5s" repeatCount="indefinite"/>
       <animate attributeName="x2" values="0;1600" dur="5s" repeatCount="indefinite"/>
     </linearGradient>
   </defs>
   <g clip-path="url(#frame)">
     <rect class="bg" width="${WIDTH}" height="${HEIGHT}"/>
-    <g filter="url(#blur)" opacity="0.5">
-      <circle class="glow glow-1 violet" cx="180" cy="80" r="150"/>
-      <circle class="glow glow-2 cyan" cx="1040" cy="300" r="160"/>
-      <circle class="glow glow-3 pink" cx="640" cy="400" r="120"/>
+    <g filter="url(#blur)" opacity="0.22">
+      <circle class="glow glow-1 accent" cx="160" cy="60" r="150"/>
+      <circle class="glow glow-2 accent" cx="1040" cy="320" r="170"/>
     </g>
     <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#dots)" mask="url(#dots-mask)" opacity="0.5"/>
   </g>
