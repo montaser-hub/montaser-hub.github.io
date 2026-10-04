@@ -129,7 +129,7 @@ export const techStack: TechStack = {
 export const experience: Experience[] = [
   {
     company: "Arkaan International Group Co.",
-    role: "Frontend Developer",
+    role: "Full Stack Developer",
     start: "Dec 2025",
     end: "Present",
     highlights: [
