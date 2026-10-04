@@ -55,12 +55,19 @@ export interface SiteCopy {
 export interface Cv {
   /** Full legal name, as it should appear on applications. */
   fullName: string;
+  /** The job title to be found under, with the main keywords recruiters search for. */
+  headline: string;
+  /** Written without "I", as CVs are. */
   summary: string;
+  /** Case studies listed under projects, by name, in order. Work already described under a job can be left out. */
+  projects: string[];
   /** Skills not in the site's tech stack, as extra "Group: items" lines. */
   extraSkills: Record<string, string[]>;
-  /** Published PDF, relative to the site root. Written by `npm run cv`. */
+  /** Published files, relative to the site root. Written by `npm run cv`. */
   file: string;
-  labels: { download: string; view: string; profile: string; skills: string; experience: string; projects: string; education: string };
+  wordFile: string;
+  /** Section headings are the standard ones applicant-tracking systems look for: keep them plain. */
+  labels: { download: string; downloadWord: string; view: string; profile: string; skills: string; experience: string; projects: string; education: string };
 }
 
 /** A headline number for the About section; `value` counts up when it scrolls into view. */

@@ -101,20 +101,24 @@ export const copy: SiteCopy = {
  */
 export const cv: Cv = {
   fullName: "Almontaser Bellah Ismail",
+  headline: "Full-Stack Software Engineer",
   summary:
-    "Full-stack engineer with 2+ years building enterprise web platforms. I specialise in metadata-driven React interfaces and Node.js/NestJS services backed by MongoDB aggregations, and I ship tests with the feature: 1,200+ automated tests and 300+ API endpoints across four team-built platforms.",
+    "Full-stack software engineer with 2+ years building enterprise web platforms. Specialised in metadata-driven React interfaces and Node.js/NestJS services backed by MongoDB aggregations. Ships tests with every feature: 1,200+ automated tests and 300+ API endpoints across four team-built platforms.",
+  projects: ["SmartShift", "Tenders — Procurement Platform", "Trigo — Ride-Hailing Backend"],
   extraSkills: {
-    Languages: ["JavaScript", "TypeScript", "Python", "C"],
+    Languages: ["JavaScript", "TypeScript", "HTML", "CSS", "SASS", "SQL", "Python", "C"],
     Practices: ["OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
   },
   file: "/Montaser-Ismail-CV.pdf",
+  wordFile: "/Montaser-Ismail-CV.docx",
   labels: {
     download: "Download CV",
+    downloadWord: "Word version",
     view: "View CV",
     profile: "Profile",
     skills: "Skills",
     experience: "Work experience",
-    projects: "Selected projects",
+    projects: "Projects",
     education: "Education",
   },
 };
@@ -211,7 +215,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     stats: [
       { value: "76 / 102", label: "API commits are mine" },
-      { value: "3 apps", label: "API, React, Angular" },
+      { value: "3", label: "apps: API, React, Angular" },
     ],
     tech: ["Node.js", "Express", "MongoDB", "React", "Redux Toolkit", "Angular", "Nx", "Docker"],
     links: [

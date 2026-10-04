@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Prints the /cv page to the PDF the site links to (public/<name>.pdf), so the
-# PDF always says what lib/data.ts says. Needs Google Chrome or Chromium.
+# Writes both CV files the site links to, from lib/data.ts: the PDF (the /cv
+# page, printed) and the Word version. Needs Google Chrome or Chromium.
 # Usage: npm run cv   (run it after changing CV-related data, then deploy)
 set -euo pipefail
 
@@ -17,3 +17,4 @@ sleep 1
 "$CHROME" --headless --no-sandbox --disable-gpu --no-pdf-header-footer \
   --print-to-pdf="public$FILE" "http://localhost:$PORT/cv.html" 2>/dev/null
 echo "Wrote public$FILE"
+node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-cv-docx.ts

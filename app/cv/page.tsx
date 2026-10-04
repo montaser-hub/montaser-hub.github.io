@@ -1,119 +1,97 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { caseStudies, contacts, cv, education, experience, profile, techStack } from "@/lib/data";
+import { buildCv, type CvEntry } from "@/lib/cv";
+import { cv, profile } from "@/lib/data";
 import "./cv.css";
 
 export const metadata: Metadata = {
-  title: `${cv.fullName} — CV`,
+  title: `${cv.fullName} - ${cv.headline} - CV`,
   description: cv.summary,
 };
 
-const bare = (url: string) => url.replace(/^(https?:\/\/(www\.)?|mailto:)/, "").replace(/\/$/, "");
-
-/** First sentence of a paragraph, for the one-line project descriptions. */
-const firstSentence = (text: string) => text.split(/(?<=[.:])\s/)[0].replace(/:$/, ".");
+function Entries({ entries }: { entries: CvEntry[] }) {
+  return entries.map((entry) => (
+    <div key={entry.title + entry.meta} className="cv-entry">
+      <h3>{entry.title}</h3>
+      <p className="cv-meta">{entry.meta}</p>
+      {entry.text && <p>{entry.text}</p>}
+      {entry.bullets && (
+        <ul>
+          {entry.bullets.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  ));
+}
 
 /**
- * The CV as a page: one column of real text under standard headings, so it
- * prints to a single A4 sheet and applicant-tracking systems can read it.
- * `npm run cv` prints this page to the PDF that the site links to.
+ * The CV as a page, rendered from lib/cv.ts. Everything is ordinary text in
+ * one column and in reading order, so it prints to a single A4 sheet and
+ * applicant-tracking systems read it as written. `npm run cv` prints this
+ * page to the PDF the site links to.
  */
 export default function CvPage() {
-  const links = [
-    ...(profile.site ? [{ label: bare(profile.site), href: profile.site }] : []),
-    ...contacts.map(({ href, kind, detail }) => ({ label: kind === "email" || kind === "whatsapp" ? detail : bare(href), href })),
-  ];
-  const skills = { ...techStack, ...cv.extraSkills };
+  const doc = buildCv();
 
   return (
     <main className="cv">
       <p className="cv-actions">
         <Link href="/">← {profile.name}</Link>
-        <a href={cv.file} download>
-          {cv.labels.download}
-        </a>
+        <span>
+          <a href={cv.file} download>
+            {cv.labels.download}
+          </a>
+          <a href={cv.wordFile} download>
+            {cv.labels.downloadWord}
+          </a>
+        </span>
       </p>
 
       <article className="cv-sheet">
         <header>
-          <h1>{cv.fullName}</h1>
-          <p className="cv-title">
-            {profile.title} · {profile.location}
-          </p>
-          <ul className="cv-links">
-            {links.map(({ label, href }) => (
-              <li key={href}>
-                <a href={href}>{label}</a>
-              </li>
-            ))}
-          </ul>
+          <h1>{doc.name}</h1>
+          <p className="cv-headline">{doc.headline}</p>
+          {doc.contactLines.map((line) => (
+            <p key={line[0].text} className="cv-contact">
+              {line.map(({ text, href }, i) => (
+                <span key={text}>
+                  {i > 0 && " | "}
+                  {href ? <a href={href}>{text}</a> : text}
+                </span>
+              ))}
+            </p>
+          ))}
         </header>
 
         <section>
           <h2>{cv.labels.profile}</h2>
-          <p>{cv.summary}</p>
+          <p>{doc.summary}</p>
         </section>
 
         <section>
           <h2>{cv.labels.skills}</h2>
-          <dl className="cv-skills">
-            {Object.entries(skills).map(([group, items]) => (
-              <div key={group}>
-                <dt>{group}</dt>
-                <dd>{items.join(", ")}</dd>
-              </div>
-            ))}
-          </dl>
+          {doc.skills.map(({ group, items }) => (
+            <p key={group}>
+              <strong>{group}:</strong> {items}
+            </p>
+          ))}
         </section>
 
         <section>
           <h2>{cv.labels.experience}</h2>
-          {experience.map((job) => (
-            <div key={job.company} className="cv-entry">
-              <h3>
-                {job.role} <span>· {job.company}</span>
-              </h3>
-              <p className="cv-when">
-                {job.start} – {job.end}
-              </p>
-              <ul>
-                {job.highlights.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <Entries entries={doc.experience} />
         </section>
 
         <section>
           <h2>{cv.labels.projects}</h2>
-          {caseStudies.map((study) => (
-            <div key={study.name} className="cv-entry">
-              <h3>
-                {study.name} <span>· {study.role}</span>
-              </h3>
-              <p className="cv-when">{study.context}</p>
-              <p>
-                {firstSentence(study.summary)}
-                {study.stats && ` ${study.stats.map((stat) => `${stat.value} ${stat.label}`).join("; ")}.`}
-              </p>
-              <p className="cv-tech">{study.tech.join(" · ")}</p>
-            </div>
-          ))}
+          <Entries entries={doc.projects} />
         </section>
 
         <section>
           <h2>{cv.labels.education}</h2>
-          {education.map((entry) => (
-            <div key={entry.institution} className="cv-entry">
-              <h3>{entry.program}</h3>
-              <p className="cv-when">{entry.period}</p>
-              <p>
-                {entry.institution}
-                {entry.detail && `. ${entry.detail}`}
-              </p>
-            </div>
-          ))}
+          <Entries entries={doc.education} />
         </section>
       </article>
     </main>

@@ -34,11 +34,11 @@ next page load; add it to `SELECTED_REPOS` to promote it.
 | Promote a repo to a card, or hide one | `SELECTED_REPOS` or `EXCLUDED_REPOS` in `lib/project-catalog.ts` |
 | Add a card screenshot | drop `<repo-name>.webp` into `public/projects/` |
 | Rename or reorder a page section, or change its heading | `lib/sections.ts` (a new section also needs its component in `app/page.tsx`) |
-| Change the CV (name, summary, extra skills) | `cv` in `lib/data.ts`, then `npm run cv`; the rest of the CV follows the site's data |
+| Change the CV (name, headline, summary, extra skills, which projects) | `cv` in `lib/data.ts`, then `npm run cv`; the rest follows the site's data through `lib/cv.ts` |
 | Change a button or small label ("Live demo", "Education", the footer line) | `copy` in `lib/data.ts` |
 | Change the icons on the GitHub profile's tech line | `STACK` in `scripts/build-profile-readme.ts` |
 
-After a change to `lib/`, run `npm run deploy` for the site and `npm run cv         # print the /cv page to the PDF the site links to (needs Chrome)
+After a change to `lib/`, run `npm run deploy` for the site and `npm run cv         # write the CV as PDF and Word from the site's data (needs Chrome)
 npm run profile:publish` for the GitHub
 profile. Repository changes on GitHub (a new repo, a new description) reach the site by themselves; the
 profile's numbers and charts are read from GitHub each time `npm run profile:publish` runs.
