@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "./Reveal";
-import { copy, profile } from "@/lib/data";
+import { copy, cv, profile } from "@/lib/data";
 import Magnetic from "./Magnetic";
 import RevealWords from "./RevealWords";
 
@@ -87,6 +87,9 @@ export default function Contact() {
           </a>
           <a href={profile.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline py-2">
             {profile.phoneDisplay}
+          </a>
+          <a href={cv.file} download className="link-underline py-2">
+            {cv.labels.download}
           </a>
         </div>
       </Reveal>

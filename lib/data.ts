@@ -9,6 +9,7 @@ import type {
   Metric,
   ContactLink,
   Place,
+  Cv,
 } from "./types";
 
 export const profile: Profile = {
@@ -91,6 +92,31 @@ export const copy: SiteCopy = {
   },
   metaDescription:
     "Full-stack software engineer building enterprise web platforms: scheduling systems, procurement tools and real-time APIs with React, Angular, Node.js and NestJS.",
+};
+
+/**
+ * The CV (the /cv page and its PDF). Contact details, skills, experience,
+ * projects and education come from the lists in this file; only what is
+ * specific to the CV is written here.
+ */
+export const cv: Cv = {
+  fullName: "Almontaser Bellah Ismail",
+  summary:
+    "Full-stack engineer with 2+ years building enterprise web platforms. I specialise in metadata-driven React interfaces and Node.js/NestJS services backed by MongoDB aggregations, and I ship tests with the feature: 1,200+ automated tests and 300+ API endpoints across four team-built platforms.",
+  extraSkills: {
+    Languages: ["JavaScript", "TypeScript", "Python", "C"],
+    Practices: ["OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
+  },
+  file: "/Montaser-Ismail-CV.pdf",
+  labels: {
+    download: "Download CV",
+    view: "View CV",
+    profile: "Profile",
+    skills: "Skills",
+    experience: "Work experience",
+    projects: "Selected projects",
+    education: "Education",
+  },
 };
 
 /**

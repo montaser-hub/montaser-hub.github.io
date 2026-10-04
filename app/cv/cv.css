@@ -1,0 +1,171 @@
+/*
+ * The CV page (app/cv/page.tsx): a white A4 sheet on the site's dark page,
+ * and just the sheet when printed. Sizes are in points so the PDF matches.
+ */
+.cv {
+  --ink: #16181d;
+  --soft: #4a5160;
+  --rule: #cfd4dc;
+  --link: #1d4ed8;
+  flex: 1;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.cv-actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 210mm;
+  margin: 0 auto 1rem;
+  font-size: 0.875rem;
+}
+
+.cv-actions a {
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.cv-actions a:hover {
+  color: var(--accent);
+}
+
+.cv-sheet {
+  max-width: 210mm;
+  margin: 0 auto;
+  padding: 11mm 14mm;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 9.3pt;
+  line-height: 1.38;
+}
+
+.cv-sheet h1 {
+  font-size: 22pt;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.cv-title {
+  margin-top: 3pt;
+  font-size: 11pt;
+  color: var(--soft);
+}
+
+.cv-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2pt 14pt;
+  margin-top: 6pt;
+  font-size: 9pt;
+}
+
+.cv-sheet a {
+  color: var(--link);
+}
+
+.cv-sheet section {
+  margin-top: 8pt;
+}
+
+.cv-sheet h2 {
+  margin-bottom: 4pt;
+  padding-bottom: 2pt;
+  border-bottom: 1px solid var(--rule);
+  font-size: 9pt;
+  font-weight: 700;
+  /* No letter-spacing: PDF text extraction (and so recruiters' systems) would split the words. */
+  text-transform: uppercase;
+}
+
+.cv-entry {
+  position: relative;
+  margin-top: 5pt;
+  break-inside: avoid;
+}
+
+.cv-entry:first-of-type {
+  margin-top: 0;
+}
+
+.cv-sheet h3 {
+  padding-right: 42mm; /* room for the dates on the right */
+  font-size: 10pt;
+  font-weight: 700;
+}
+
+.cv-sheet h3 span {
+  font-weight: 500;
+  color: var(--soft);
+}
+
+.cv-when {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 9pt;
+  color: var(--soft);
+}
+
+.cv-entry ul {
+  margin-top: 2pt;
+  padding-left: 12pt;
+  list-style: disc;
+}
+
+.cv-tech {
+  font-size: 8.6pt;
+  color: var(--soft);
+}
+
+.cv-skills div {
+  display: grid;
+  grid-template-columns: 34mm 1fr;
+}
+
+.cv-skills dt {
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .cv-sheet {
+    padding: 8mm 6mm;
+  }
+
+  .cv-sheet h3 {
+    padding-right: 0;
+  }
+
+  .cv-when {
+    position: static;
+  }
+
+  .cv-skills div {
+    grid-template-columns: 1fr;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  .cv {
+    padding: 0;
+  }
+
+  .cv-actions {
+    display: none;
+  }
+
+  .cv-sheet {
+    max-width: none;
+    border-radius: 0;
+  }
+}

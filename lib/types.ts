@@ -51,6 +51,18 @@ export interface SiteCopy {
   metaDescription: string;
 }
 
+/** What the CV adds to the site's data: everything else on it is read from the same lists as the site. */
+export interface Cv {
+  /** Full legal name, as it should appear on applications. */
+  fullName: string;
+  summary: string;
+  /** Skills not in the site's tech stack, as extra "Group: items" lines. */
+  extraSkills: Record<string, string[]>;
+  /** Published PDF, relative to the site root. Written by `npm run cv`. */
+  file: string;
+  labels: { download: string; view: string; profile: string; skills: string; experience: string; projects: string; education: string };
+}
+
 /** A headline number for the About section; `value` counts up when it scrolls into view. */
 export interface Metric {
   value: number;

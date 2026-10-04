@@ -1,11 +1,12 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
 import { useRef } from "react";
 import ConnectGlobe from "./ConnectGlobe";
 import Typewriter from "./Typewriter";
 import Magnetic from "./Magnetic";
-import { copy, profile } from "@/lib/data";
+import { copy, cv, profile } from "@/lib/data";
 import { sections } from "@/lib/sections";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -91,6 +92,9 @@ export default function Hero() {
           >
             {copy.hero.secondaryCta}
           </a>
+          <Link href="/cv" className="link-underline py-3 text-sm font-medium text-muted transition-colors duration-200 hover:text-foreground">
+            {cv.labels.view}
+          </Link>
         </motion.div>
       </motion.div>
 

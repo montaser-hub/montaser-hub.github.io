@@ -9,6 +9,7 @@
     "lint": "eslint",
     "profile": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-profile-readme.ts",
     "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-site-images.ts",
+    "cv": "bash scripts/build-cv.sh",
     "profile:publish": "bash scripts/publish-profile.sh",
     "deploy": "bash scripts/deploy.sh"
   },
