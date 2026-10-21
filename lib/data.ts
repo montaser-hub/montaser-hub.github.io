@@ -109,7 +109,7 @@ export const cv: Cv = {
   projectBullets: 1,
   extraSkills: {
     Languages: ["JavaScript", "TypeScript", "HTML", "CSS", "SASS", "SQL", "Python", "C"],
-    Practices: ["OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
+    Practices: ["Agile / Scrum", "OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
   },
   file: "/Montaser-Ismail-CV.pdf",
   wordFile: "/Montaser-Ismail-CV.docx",
@@ -214,7 +214,7 @@ export const caseStudies: CaseStudy[] = [
     summary:
       "A shift-scheduling platform for hospitals: staff see their schedule, swap shifts through a two-step approval and get live notifications. A Node.js API and a React staff dashboard in one Nx monorepo, with an Angular admin portal.",
     highlights: [
-      "Built the GitHub Actions CI/CD: Nx lint, test and build on each push; Docker image deployed to Heroku.",
+      "Built the CI/CD pipeline in GitHub Actions (Nx lint, test and build on each push) and deployed the Dockerized API to the cloud on Heroku.",
       "Wrote most of the REST API (Express, MongoDB): auth and users, swap requests with peer-then-manager approval, overnight shift handling, and the shared filtering and pagination layer.",
       "JWT sessions in httpOnly cookies, role-based access, Joi-validated input, and notifications pushed live over Server-Sent Events.",
       "An AI assistant endpoint (Groq) that answers questions about schedules in plain language.",
@@ -239,7 +239,7 @@ export const caseStudies: CaseStudy[] = [
     summary:
       "A content platform for editorial teams: admins approve sign-ups and assign roles, writers draft in a rich-text editor, editors review and publish, and readers get fast server-rendered pages. A NestJS API and a Next.js app, live on free cloud tiers.",
     highlights: [
-      "Runs on Vercel and Render with Neon PostgreSQL, Upstash Redis and Cloudflare R2; GitHub Actions CI runs lint and tests.",
+      "Deployed to the cloud on Vercel and Render with managed PostgreSQL, Redis and S3-compatible storage; GitHub Actions CI runs lint and tests.",
       "NestJS API over PostgreSQL with Prisma: JWT sessions in httpOnly cookies with rotating refresh tokens, admin-approved sign-up and role-based permissions.",
       "Media pipeline: uploads checked by file signature, WebP thumbnails made by a BullMQ worker, files kept in S3-compatible storage.",
       "Next.js front end with a TipTap editor, and server-rendered public article pages that search engines can index.",

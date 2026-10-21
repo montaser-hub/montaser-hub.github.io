@@ -106,8 +106,19 @@
 }
 
 .cv-meta {
+  display: flex;
+  /* On a narrow screen the dates drop under a long place instead of squeezing it. */
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 1em;
   margin-bottom: 1.5pt;
   color: var(--soft);
+}
+
+/* A date range never breaks. */
+.cv-dates {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .cv-subtitle {
@@ -118,17 +129,25 @@
   color: var(--soft);
 }
 
-.cv-nowrap {
-  white-space: nowrap;
-}
-
 .cv-sheet strong {
   font-weight: 700;
 }
 
+/* The bullet is text (see page.tsx), hung in the left margin so wrapped lines align. */
 .cv-entry ul {
+  list-style: none;
+}
+
+.cv-entry li {
   padding-left: 13pt;
-  list-style: disc;
+  text-indent: -13pt;
+}
+
+.cv-bullet {
+  display: inline-block;
+  width: 13pt;
+  padding-left: 4pt;
+  text-indent: 0;
 }
 
 @media (max-width: 640px) {

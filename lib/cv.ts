@@ -18,8 +18,10 @@ export interface CvEntry {
   title: string;
   /** What it is, shown after the title in regular weight. */
   subtitle?: string;
-  /** Where and when, on the line under the title. */
-  meta: string;
+  /** Where: the company, school or role and context, on the line under the title. */
+  place: string;
+  /** When, set against the right margin of that line. Kept apart from `place` so no pipe joins them. */
+  dates?: string;
   /** A line under the bullets. */
   text?: string;
   bullets?: string[];
@@ -51,7 +53,8 @@ const firstSentence = (text: string) => text.split(/(?<=[.:])\s/)[0].replace(/:$
 // The detail line stays on the site: the CV keeps to one page.
 const toEntry = (entry: (typeof education)[number]): CvEntry => ({
   title: plain(entry.program),
-  meta: `${entry.institution} | ${plain(entry.period)}`,
+  place: entry.institution,
+  dates: plain(entry.period),
 });
 
 export function buildCv(): CvDocument {
@@ -73,7 +76,8 @@ export function buildCv(): CvDocument {
     skills: Object.entries({ ...techStack, ...cv.extraSkills }).map(([group, items]) => ({ group, items: items.join(", ") })),
     experience: experience.map((job) => ({
       title: job.role,
-      meta: `${job.company} | ${job.start} - ${job.end}`,
+      place: job.company,
+      dates: `${job.start} - ${job.end}`,
       bullets: job.highlights,
     })),
     projects: cv.projects.flatMap((name) => {
@@ -84,7 +88,8 @@ export function buildCv(): CvDocument {
         {
           title: plain(study.name),
           subtitle: capitalise(firstSentence(study.summary).replace(/^(A|An|The) /, "").replace(/\.$/, "")),
-          meta: [plain(study.role), plain(study.context), study.period && plain(study.period)].filter(Boolean).join(" | "),
+          place: `${plain(study.role)} - ${plain(study.context)}`,
+          dates: study.period && plain(study.period),
           bullets: [
             ...study.highlights.slice(0, cv.projectBullets),
             ...(figures ? [`${capitalise(figures)}.`] : []),

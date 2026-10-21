@@ -8,7 +8,7 @@
  */
 import { writeFileSync } from "node:fs";
 import path from "node:path";
-import { AlignmentType, BorderStyle, Document, ExternalHyperlink, Packer, Paragraph, TextRun, convertMillimetersToTwip } from "docx";
+import { AlignmentType, BorderStyle, Document, ExternalHyperlink, Packer, Paragraph, Tab, TabStopType, TextRun, convertMillimetersToTwip } from "docx";
 import { buildCv, type CvEntry, type CvLink } from "../lib/cv.ts";
 import { cv } from "../lib/data.ts";
 
@@ -16,6 +16,8 @@ const FONT = "Arial";
 const INK = "111318";
 const SOFT = "3F4552";
 const LINK = "0B4FB3";
+/** A4 width less the 15mm side margins. */
+const TEXT_WIDTH = convertMillimetersToTwip(210 - 2 * 15);
 /** Word measures type in half-points and spacing in twentieths of a point. */
 const pt = (points: number) => points * 2;
 const space = (points: number) => points * 20;
@@ -34,14 +36,22 @@ const heading = (label: string) =>
     children: [text(label.toUpperCase(), { size: 12, bold: true })],
   });
 
-function entry({ title, subtitle, meta, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
+function entry({ title, subtitle, place, dates, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
   return [
     new Paragraph({
       keepNext: true,
       spacing: { before: first ? 0 : space(3.5) },
-      children: [text(title, { size: 11, bold: true }), ...(subtitle ? [text(` | ${subtitle}`, { size: 11 })] : [])],
+      children: [text(title, { size: 11, bold: true }), ...(subtitle ? [text(`: ${subtitle}`, { size: 11 })] : [])],
     }),
-    new Paragraph({ keepNext: true, children: [text(meta, { color: SOFT })] }),
+    // Dates sit on a right tab stop at the text's right edge, as on the page.
+    new Paragraph({
+      keepNext: true,
+      tabStops: [{ type: TabStopType.RIGHT, position: TEXT_WIDTH }],
+      children: [
+        text(place, { color: SOFT }),
+        ...(dates ? [new TextRun({ children: [new Tab(), dates], font: FONT, size: pt(10), color: SOFT })] : []),
+      ],
+    }),
     ...(bullets ?? []).map((point) => new Paragraph({ bullet: { level: 0 }, children: [text(point)] })),
     ...(body ? [new Paragraph({ children: [text(body, { color: SOFT })] })] : []),
   ];

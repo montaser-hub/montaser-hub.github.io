@@ -9,32 +9,29 @@ export const metadata: Metadata = {
   description: cv.summary,
 };
 
-/** Keeps the last part of a "place | dates" line together, so a date range never breaks. */
-function Meta({ text }: { text: string }) {
-  const at = text.lastIndexOf(" | ");
-  if (at === -1) return text;
-  return (
-    <>
-      {text.slice(0, at + 3)}
-      <span className="cv-nowrap">{text.slice(at + 3)}</span>
-    </>
-  );
-}
-
+/**
+ * Bullets are a real "•" character, not a CSS list marker: Chrome draws list
+ * markers as shapes, so they never reach the PDF's text and parsers run the
+ * points together.
+ */
 function Entries({ entries }: { entries: CvEntry[] }) {
   return entries.map((entry) => (
-    <div key={entry.title + entry.meta} className="cv-entry">
+    <div key={entry.title + entry.place} className="cv-entry">
       <h3>
         {entry.title}
-        {entry.subtitle && <span className="cv-subtitle"> | {entry.subtitle}</span>}
+        {entry.subtitle && <span className="cv-subtitle">: {entry.subtitle}</span>}
       </h3>
       <p className="cv-meta">
-        <Meta text={entry.meta} />
+        <span>{entry.place}</span>
+        {entry.dates && <span className="cv-dates">{entry.dates}</span>}
       </p>
       {entry.bullets && (
         <ul>
           {entry.bullets.map((point) => (
-            <li key={point}>{point}</li>
+            <li key={point}>
+              <span className="cv-bullet">•</span>
+              {point}
+            </li>
           ))}
         </ul>
       )}
