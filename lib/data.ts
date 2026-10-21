@@ -108,7 +108,7 @@ export const cv: Cv = {
   projects: ["SmartShift", "Signoff — Content Management System", "Trigo — Ride-Hailing Backend"],
   projectBullets: 1,
   extraSkills: {
-    Languages: ["JavaScript", "TypeScript", "HTML", "CSS", "SASS", "SQL", "Python", "C"],
+    "Programming languages": ["JavaScript", "TypeScript", "Python", "C"],
     Practices: ["Agile / Scrum", "OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
   },
   file: "/Montaser-Ismail-CV.pdf",
@@ -153,9 +153,9 @@ export const focusAreas: FocusArea[] = [
 ];
 
 export const techStack: TechStack = {
-  Frontend: ["React", "Next.js", "Angular", "TypeScript", "Redux Toolkit", "Material UI", "Tailwind CSS", "Framer Motion"],
+  Frontend: ["React", "Next.js", "Angular", "TypeScript", "HTML", "CSS", "SASS", "Redux Toolkit", "Material UI", "Tailwind CSS", "Framer Motion"],
   Backend: ["Node.js", "NestJS", "Express", "GraphQL", "Socket.io", "Redis", "BullMQ", "JWT", "OAuth 2.0"],
-  Data: ["MongoDB", "PostgreSQL", "Prisma", "MySQL", "SQL Server", "AWS S3"],
+  Data: ["MongoDB", "PostgreSQL", "SQL", "Prisma", "MySQL", "SQL Server", "AWS S3"],
   "Testing & DevOps": ["Jest", "Vitest", "Jasmine", "Docker", "Nx Monorepos", "GitHub Actions", "CI/CD"],
 };
 
