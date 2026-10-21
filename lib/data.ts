@@ -101,12 +101,15 @@ export const copy: SiteCopy = {
  */
 export const cv: Cv = {
   fullName: "Almontaser Bellah Ismail",
+  location: "Sheikh Zayed City, Giza, Egypt",
   headline: "Full-Stack Software Engineer",
   summary:
-    "Full-stack software engineer with 2+ years building enterprise web platforms. Specialised in metadata-driven React interfaces and Node.js/NestJS services backed by MongoDB aggregations. Ships tests with every feature: 1,200+ automated tests and 300+ API endpoints across four team-built platforms.",
-  projects: ["SmartShift", "Tenders — Procurement Platform", "Trigo — Ride-Hailing Backend"],
+    "Full-stack software engineer with 2+ years building enterprise platforms: metadata-driven React interfaces and Node.js/NestJS APIs. Shipped 1,200+ automated tests and 300+ API endpoints across four team-built products.",
+  projects: ["SmartShift", "Signoff — Content Management System", "Trigo — Ride-Hailing Backend"],
+  projectBullets: 1,
   extraSkills: {
     Languages: ["JavaScript", "TypeScript", "HTML", "CSS", "SASS", "SQL", "Python", "C"],
+    Cloud: ["Vercel", "Render", "Heroku", "Neon PostgreSQL", "Upstash Redis", "Cloudflare R2"],
     Practices: ["OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
   },
   file: "/Montaser-Ismail-CV.pdf",
@@ -120,6 +123,7 @@ export const cv: Cv = {
     experience: "Work experience",
     projects: "Projects",
     education: "Education",
+    certifications: "Certifications",
   },
 };
 
@@ -153,7 +157,7 @@ export const techStack: TechStack = {
   Frontend: ["React", "Next.js", "Angular", "TypeScript", "Redux Toolkit", "Tailwind CSS", "Framer Motion"],
   Backend: ["Node.js", "NestJS", "Express", "GraphQL", "Socket.io", "Redis", "BullMQ", "JWT Auth"],
   Data: ["MongoDB", "PostgreSQL", "Prisma", "MySQL", "SQL Server", "AWS S3"],
-  "Testing & DevOps": ["Jest", "Vitest", "Jasmine", "Docker", "Nx Monorepos", "CI/CD"],
+  "Testing & DevOps": ["Jest", "Vitest", "Jasmine", "Docker", "Nx Monorepos", "GitHub Actions", "CI/CD"],
 };
 
 export const experience: Experience[] = [
@@ -166,6 +170,7 @@ export const experience: Experience[] = [
       "Engineered dynamic UI components rendered entirely from JSON metadata schemas, reducing manual frontend coding effort by ~40%.",
       "Developed configurable form builders that auto-generate layouts from backend data models, cutting form development time by ~70% across 5+ form types.",
       "Built a high-performance rendering engine mapping server-side metadata to reusable React components, supporting 10+ reusable component types application-wide.",
+      "Led the front end of a client procurement platform: designed the interface in Figma and shipped it with 566 Vitest tests across 49 files.",
     ],
   },
   {
@@ -186,11 +191,13 @@ export const education: EducationEntry[] = [
     institution: "Information Technology Institute (ITI)",
     program: "Full Stack Intensive Code Camp — MEARN Stack",
     period: "Jul 2025 – Dec 2025",
+    kind: "certificate",
   },
   {
     institution: "6 October High Institute for Engineering & Technology",
     program: "B.Sc. Communication & Electronics Engineering",
     period: "2014 – 2019",
+    kind: "degree",
     detail: "RF energy-harvesting rectenna design (Agilent ADS, CST); organized IEEE student workshops.",
   },
 ];
@@ -203,12 +210,13 @@ export const education: EducationEntry[] = [
 export const caseStudies: CaseStudy[] = [
   {
     name: "SmartShift",
-    context: "Team project · 2025",
+    context: "Team project",
     role: "Full-stack engineer · API lead",
     summary:
       "A shift-scheduling platform for hospitals: staff see their schedule, swap shifts through a two-step approval and get live notifications. A Node.js API and a React staff dashboard in one Nx monorepo, with an Angular admin portal.",
     highlights: [
-      "I wrote most of the REST API (Express, MongoDB): auth and users, swap requests with peer-then-manager approval, shift time handling including overnight shifts, and the shared filtering and pagination layer.",
+      "Built the GitHub Actions CI/CD: Nx lint, test and build on each push; Docker image deployed to Heroku.",
+      "Wrote most of the REST API (Express, MongoDB): auth and users, swap requests with peer-then-manager approval, overnight shift handling, and the shared filtering and pagination layer.",
       "JWT sessions in httpOnly cookies, role-based access, Joi-validated input, and notifications pushed live over Server-Sent Events.",
       "An AI assistant endpoint (Groq) that answers questions about schedules in plain language.",
       "Contributed to the React dashboard (Redux Toolkit, calendar views) built mainly by a teammate; the Angular admin portal is a teammate's.",
@@ -223,6 +231,31 @@ export const caseStudies: CaseStudy[] = [
       { label: "Angular admin portal", href: "https://github.com/hageramadan/SmartShift" },
     ],
     image: "/projects/smartshift.webp",
+    period: "Oct 2025 – Nov 2025",
+  },
+  {
+    name: "Signoff — Content Management System",
+    context: "Own product · live",
+    role: "Full-stack engineer",
+    summary:
+      "A content platform for editorial teams: admins approve sign-ups and assign roles, writers draft in a rich-text editor, editors review and publish, and readers get fast server-rendered pages. A NestJS API and a Next.js app, live on free cloud tiers.",
+    highlights: [
+      "Runs on Vercel and Render with Neon PostgreSQL, Upstash Redis and Cloudflare R2; GitHub Actions CI runs lint and tests.",
+      "NestJS API over PostgreSQL with Prisma: JWT sessions in httpOnly cookies with rotating refresh tokens, admin-approved sign-up and role-based permissions.",
+      "Media pipeline: uploads checked by file signature, WebP thumbnails made by a BullMQ worker, files kept in S3-compatible storage.",
+      "Next.js front end with a TipTap editor, and server-rendered public article pages that search engines can index.",
+    ],
+    stats: [
+      { value: "104", label: "unit tests passing" },
+      { value: "20", label: "end-to-end tests" },
+    ],
+    tech: ["NestJS", "TypeScript", "PostgreSQL", "Prisma", "Redis", "BullMQ", "Next.js", "Docker"],
+    links: [
+      { label: "Live app", href: "https://content-management-system-iota.vercel.app" },
+      { label: "API docs", href: "https://content-management-system-iota.vercel.app/api/docs" },
+    ],
+    image: "/projects/signoff.webp",
+    period: "Sep 2026 – Present",
   },
   {
     name: "Tenders — Procurement Platform",
@@ -243,6 +276,7 @@ export const caseStudies: CaseStudy[] = [
     tech: ["React", "Redux Toolkit", "Tailwind CSS", "Vite", "Vitest"],
     note: "Source private",
     image: "/projects/tenders.webp",
+    period: "2026",
   },
   {
     name: "Trigo — Ride-Hailing Backend",
@@ -251,8 +285,8 @@ export const caseStudies: CaseStudy[] = [
     summary:
       "The real-time API behind a ride-hailing app: matching riders with drivers, shared rides, live driver locations, and in-app chat and calls.",
     highlights: [
-      "NestJS modules over PostgreSQL with Prisma, with rate limiting and Swagger docs.",
       "Live locations, chat and call signaling over Socket.io, scaled across instances with a Redis adapter.",
+      "NestJS modules over PostgreSQL with Prisma, with rate limiting and Swagger docs.",
       "Driver matching and shared-ride logic covered by unit tests: 639 passing across 49 suites.",
     ],
     stats: [
@@ -264,6 +298,7 @@ export const caseStudies: CaseStudy[] = [
     note: "Source private",
     image: "/projects/trigo.webp",
     imageCaption: "The API's Swagger documentation: 21 areas, 136 endpoints.",
+    period: "Dec 2025 – Feb 2026",
   },
   {
     name: "Qyser — Residency Scheduling API",
@@ -285,5 +320,6 @@ export const caseStudies: CaseStudy[] = [
     note: "Source private",
     image: "/projects/qyser.webp",
     imageCaption: "The web app my API serves (UI by the front-end team), running on demo data.",
+    period: "Sep 2024 – Mar 2026",
   },
 ];

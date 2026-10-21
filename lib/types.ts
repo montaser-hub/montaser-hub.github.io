@@ -55,6 +55,8 @@ export interface SiteCopy {
 export interface Cv {
   /** Full legal name, as it should appear on applications. */
   fullName: string;
+  /** City-level location for the CV: recruiters and their systems filter by it. */
+  location: string;
   /** The job title to be found under, with the main keywords recruiters search for. */
   headline: string;
   /** Written without "I", as CVs are. */
@@ -67,7 +69,19 @@ export interface Cv {
   file: string;
   wordFile: string;
   /** Section headings are the standard ones applicant-tracking systems look for: keep them plain. */
-  labels: { download: string; downloadWord: string; view: string; profile: string; skills: string; experience: string; projects: string; education: string };
+  /** How many of each project's highlights the CV shows as bullets (the first ones), before its figures. */
+  projectBullets: number;
+  labels: {
+    download: string;
+    downloadWord: string;
+    view: string;
+    profile: string;
+    skills: string;
+    experience: string;
+    projects: string;
+    education: string;
+    certifications: string;
+  };
 }
 
 /** A headline number for the About section; `value` counts up when it scrolls into view. */
@@ -97,6 +111,8 @@ export interface EducationEntry {
   program: string;
   period: string;
   detail?: string;
+  /** "certificate" for a training programme with a certificate; the CV lists those under Certifications. */
+  kind?: "degree" | "certificate";
 }
 
 export interface ProjectLink {
@@ -125,6 +141,8 @@ export interface CaseStudy {
   image?: string;
   /** Says what the screenshot shows when it isn't obviously my own work. */
   imageCaption?: string;
+  /** When I worked on it, e.g. "Oct 2025 – Nov 2025". */
+  period?: string;
 }
 
 export interface Project {

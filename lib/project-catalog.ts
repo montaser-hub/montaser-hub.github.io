@@ -14,6 +14,8 @@ export const EXCLUDED_REPOS = new Set([
   "montaser-hub.github.io",
   "montaser-hub",
   "Portal",
+  // Shown as the Signoff case study; the repository is private for now.
+  "content-management-system",
   // Superseded: each of its sub-projects now has its own repo and card.
   "Web_Design",
   // Instructor-provided apps where only the lab exercises are mine; real
@@ -42,7 +44,6 @@ export const EXCLUDED_REPOS = new Set([
 export const SELECTED_REPOS = [
   "Full-Stack-E-commerce-reactjs-nodejs",
   "movie-website",
-  "content-management-system",
   "mealhub-ecommerce",
   "natours",
   "graphql-api-server",
@@ -98,13 +99,6 @@ export const OVERRIDES: Record<string, Partial<Project>> = {
       "Framework-free inventory dashboard in vanilla JavaScript: CRUD, live pricing validation, search, stats and dark mode.",
     tech: ["JavaScript", "HTML", "CSS"],
     demo: "https://montaser-hub.github.io/product-management-system/",
-  },
-  "content-management-system": {
-    name: "Content Management System",
-    note: "In progress · becoming a team project",
-    description:
-      "Role-based CMS API: admin-approved signup, JWT cookies with rotating refresh tokens. 23 unit and 6 end-to-end tests.",
-    tech: ["NestJS", "TypeScript", "PostgreSQL", "Prisma", "Jest"],
   },
   "nextjs-recipe-store": {
     name: "Recipe Store",

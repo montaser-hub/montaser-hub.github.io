@@ -26,6 +26,7 @@ function CaseStudyItem({ study, priority, isLast }: { study: CaseStudy; priority
           <span className="inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-accent">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             {study.context}
+            {study.period && ` · ${study.period}`}
           </span>
           <h3 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {study.name}

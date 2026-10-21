@@ -21,24 +21,31 @@ const pt = (points: number) => points * 2;
 const space = (points: number) => points * 20;
 
 const text = (value: string, options: { size?: number; bold?: boolean; color?: string } = {}) =>
-  new TextRun({ text: value, font: FONT, size: pt(options.size ?? 10.5), bold: options.bold, color: options.color ?? INK });
+  new TextRun({ text: value, font: FONT, size: pt(options.size ?? 10), bold: options.bold, color: options.color ?? INK });
 
 const linked = ({ text: label, href }: CvLink, size: number) =>
   href ? new ExternalHyperlink({ link: href, children: [text(label, { size, color: LINK })] }) : text(label, { size });
 
 const heading = (label: string) =>
   new Paragraph({
-    spacing: { before: space(9), after: space(4) },
+    keepNext: true,
+    spacing: { before: space(6), after: space(4) },
     border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "9AA1AD", space: 1 } },
     children: [text(label.toUpperCase(), { size: 12, bold: true })],
   });
 
-function entry({ title, meta, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
+function entry({ compact, title, meta, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
+  const spacing = { before: first ? 0 : space(3.5) };
+  const heading = compact
+    ? [new Paragraph({ spacing, children: [text(title, { bold: true }), text(` | ${meta}`, { color: SOFT })] })]
+    : [
+        new Paragraph({ keepNext: true, spacing, children: [text(title, { size: 11, bold: true })] }),
+        new Paragraph({ keepNext: true, children: [text(meta, { color: SOFT })] }),
+      ];
   return [
-    new Paragraph({ keepNext: true, spacing: { before: first ? 0 : space(5) }, children: [text(title, { size: 11, bold: true })] }),
-    new Paragraph({ keepNext: true, children: [text(meta, { color: SOFT })] }),
-    ...(body ? [new Paragraph({ children: [text(body)] })] : []),
+    ...heading,
     ...(bullets ?? []).map((point) => new Paragraph({ bullet: { level: 0 }, children: [text(point)] })),
+    ...(body ? [new Paragraph({ children: [text(body)] })] : []),
   ];
 }
 
@@ -53,7 +60,7 @@ const file = new Document({
   description: doc.summary,
   sections: [
     {
-      properties: { page: { size: { width: convertMillimetersToTwip(210), height: convertMillimetersToTwip(297) }, margin: { top: convertMillimetersToTwip(11), bottom: convertMillimetersToTwip(11), left: margin, right: margin } } },
+      properties: { page: { size: { width: convertMillimetersToTwip(210), height: convertMillimetersToTwip(297) }, margin: { top: convertMillimetersToTwip(10), bottom: convertMillimetersToTwip(10), left: margin, right: margin } } },
       children: [
         new Paragraph({ alignment: AlignmentType.CENTER, children: [text(doc.name, { size: 20, bold: true })] }),
         new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: space(2), after: space(3) }, children: [text(doc.headline, { size: 12, bold: true, color: SOFT })] }),
@@ -74,6 +81,7 @@ const file = new Document({
         ...entries(doc.projects),
         heading(cv.labels.education),
         ...entries(doc.education),
+        ...(doc.certifications.length ? [heading(cv.labels.certifications), ...entries(doc.certifications)] : []),
       ],
     },
   ],

@@ -9,12 +9,35 @@ export const metadata: Metadata = {
   description: cv.summary,
 };
 
+/** Keeps the last part of a "place | dates" line together, so a date range never breaks. */
+function Meta({ text }: { text: string }) {
+  const at = text.lastIndexOf(" | ");
+  if (at === -1) return text;
+  return (
+    <>
+      {text.slice(0, at + 3)}
+      <span className="cv-nowrap">{text.slice(at + 3)}</span>
+    </>
+  );
+}
+
 function Entries({ entries }: { entries: CvEntry[] }) {
   return entries.map((entry) => (
     <div key={entry.title + entry.meta} className="cv-entry">
-      <h3>{entry.title}</h3>
-      <p className="cv-meta">{entry.meta}</p>
-      {entry.text && <p>{entry.text}</p>}
+      {entry.compact ? (
+        <p>
+          <strong>{entry.title}</strong> <span className="cv-meta">
+            | <Meta text={entry.meta} />
+          </span>
+        </p>
+      ) : (
+        <>
+          <h3>{entry.title}</h3>
+          <p className="cv-meta">
+            <Meta text={entry.meta} />
+          </p>
+        </>
+      )}
       {entry.bullets && (
         <ul>
           {entry.bullets.map((point) => (
@@ -22,6 +45,7 @@ function Entries({ entries }: { entries: CvEntry[] }) {
           ))}
         </ul>
       )}
+      {entry.text && <p>{entry.text}</p>}
     </div>
   ));
 }
@@ -93,6 +117,13 @@ export default function CvPage() {
           <h2>{cv.labels.education}</h2>
           <Entries entries={doc.education} />
         </section>
+
+        {doc.certifications.length > 0 && (
+          <section>
+            <h2>{cv.labels.certifications}</h2>
+            <Entries entries={doc.certifications} />
+          </section>
+        )}
       </article>
     </main>
   );

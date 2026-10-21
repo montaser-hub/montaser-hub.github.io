@@ -2,9 +2,10 @@
  * The CV page (app/cv/page.tsx): a white A4 sheet on the site's dark page,
  * and just the sheet when printed.
  *
- * Type follows common CV guidance: one standard font (Arial), body 10.5pt,
+ * Type follows common CV guidance: one standard font (Arial), body 10pt,
  * job titles 11pt, section headings 12pt, name 20pt, single line spacing.
- * Sizes are in points so the PDF matches. Keep it to one page.
+ * Sizes are in points so the PDF matches. Keep it to one page; if it ever
+ * runs over, entries never split and headings stay with what follows.
  */
 .cv {
   --ink: #111318;
@@ -40,14 +41,14 @@
 .cv-sheet {
   max-width: 210mm;
   margin: 0 auto;
-  padding: 11mm 15mm;
+  padding: 12mm 15mm;
   border-radius: 4px;
   background: #fff;
   color: var(--ink);
   /* A font every system has: it embeds in the PDF as ordinary text any parser can read. */
   font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
-  font-size: 10.5pt;
-  line-height: 1.18;
+  font-size: 10pt;
+  line-height: 1.15;
 }
 
 .cv-sheet header {
@@ -76,7 +77,7 @@
 }
 
 .cv-sheet section {
-  margin-top: 8pt;
+  margin-top: 6pt;
 }
 
 .cv-sheet h2 {
@@ -87,10 +88,11 @@
   font-weight: 700;
   /* No letter-spacing: PDF text extraction (and so recruiters' systems) would split the words. */
   text-transform: uppercase;
+  break-after: avoid;
 }
 
 .cv-entry {
-  margin-top: 5pt;
+  margin-top: 3.5pt;
   break-inside: avoid;
 }
 
@@ -108,6 +110,14 @@
   color: var(--soft);
 }
 
+.cv-nowrap {
+  white-space: nowrap;
+}
+
+.cv-sheet strong {
+  font-weight: 700;
+}
+
 .cv-entry ul {
   padding-left: 13pt;
   list-style: disc;
@@ -119,9 +129,10 @@
   }
 }
 
+/* The page margins come from @page when printed, so the second page has them too. */
 @page {
   size: A4;
-  margin: 0;
+  margin: 10mm 15mm;
 }
 
 @media print {
@@ -140,6 +151,7 @@
 
   .cv-sheet {
     max-width: none;
+    padding: 0;
     border-radius: 0;
   }
 }

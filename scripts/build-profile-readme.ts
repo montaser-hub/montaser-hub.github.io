@@ -93,8 +93,10 @@ async function build(): Promise<void> {
       HEIGHT_PAIR
     )
   );
-  // Private projects are the case studies without a public repository link.
-  const privateStacks = caseStudies.filter((study) => !study.links).map((study) => study.tech);
+  // Private projects: case studies with no link to one of my public repositories (they are counted from the repos).
+  const privateStacks = caseStudies
+    .filter((study) => !study.links?.some((link) => link.href.startsWith(`${profile.github}/`)))
+    .map((study) => study.tech);
   const coverage = measureCoverage(login, NOT_PROJECTS, privateStacks);
   if (coverage) {
     write(

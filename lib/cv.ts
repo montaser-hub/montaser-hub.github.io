@@ -15,10 +15,12 @@ export interface CvLink {
 }
 
 export interface CvEntry {
+  /** Title and meta on one line, for short entries such as degrees. */
+  compact?: boolean;
   title: string;
   /** Where and when, on the line under the title. */
   meta: string;
-  /** A paragraph under the entry. */
+  /** A line under the bullets. */
   text?: string;
   bullets?: string[];
 }
@@ -33,6 +35,7 @@ export interface CvDocument {
   experience: CvEntry[];
   projects: CvEntry[];
   education: CvEntry[];
+  certifications: CvEntry[];
 }
 
 /** Separators a parser reads reliably: commas and hyphens instead of middle dots and long dashes. */
@@ -43,6 +46,13 @@ const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\
 /** First sentence of a paragraph, for the one-line project descriptions. */
 const firstSentence = (text: string) => text.split(/(?<=[.:])\s/)[0].replace(/:$/, ".");
 
+// The detail line stays on the site: the CV keeps to one page.
+const toEntry = (entry: (typeof education)[number]): CvEntry => ({
+  compact: true,
+  title: plain(entry.program),
+  meta: `${entry.institution} | ${plain(entry.period)}`,
+});
+
 export function buildCv(): CvDocument {
   const link = (kind: (typeof contacts)[number]["kind"]) => contacts.find((contact) => contact.kind === kind);
   const web = [link("linkedin"), link("github")].flatMap((contact) => (contact ? [{ text: bare(contact.href), href: contact.href }] : []));
@@ -52,7 +62,7 @@ export function buildCv(): CvDocument {
     headline: cv.headline,
     contactLines: [
       [
-        { text: profile.location, href: "" },
+        { text: cv.location, href: "" },
         { text: profile.phoneDisplay, href: `tel:${profile.phoneDisplay.replace(/\s/g, "")}` },
         { text: profile.email, href: `mailto:${profile.email}` },
       ],
@@ -68,19 +78,20 @@ export function buildCv(): CvDocument {
     projects: cv.projects.flatMap((name) => {
       const study = caseStudies.find((candidate) => candidate.name === name);
       if (!study) throw new Error(`cv.projects names "${name}", which is not a case study in lib/data.ts`);
-      const figures = study.stats ? ` ${study.stats.map((stat) => `${stat.value} ${stat.label}`).join("; ")}.` : "";
+      const figures = study.stats?.map((stat) => `${stat.value} ${stat.label}`).join("; ");
       return [
         {
-          title: plain(study.name),
-          meta: `${plain(study.role)} | ${plain(study.context)}`,
-          text: `${firstSentence(study.summary)}${figures} Technologies: ${study.tech.join(", ")}.`,
+          title: `${plain(study.name)}: ${firstSentence(study.summary).replace(/^A /, "a ").replace(/^The /, "the ")}`,
+          meta: [plain(study.role), plain(study.context), study.period && plain(study.period)].filter(Boolean).join(" | "),
+          bullets: [
+            ...study.highlights.slice(0, cv.projectBullets),
+            ...(figures ? [`${figures.charAt(0).toUpperCase()}${figures.slice(1)}.`] : []),
+          ],
+          text: `Technologies: ${study.tech.join(", ")}.`,
         },
       ];
     }),
-    education: education.map((entry) => ({
-      title: plain(entry.program),
-      meta: `${entry.institution} | ${plain(entry.period)}`,
-      text: entry.detail,
-    })),
+    education: education.filter((entry) => entry.kind !== "certificate").map(toEntry),
+    certifications: education.filter((entry) => entry.kind === "certificate").map(toEntry),
   };
 }
