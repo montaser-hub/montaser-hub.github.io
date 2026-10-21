@@ -24,20 +24,13 @@ function Meta({ text }: { text: string }) {
 function Entries({ entries }: { entries: CvEntry[] }) {
   return entries.map((entry) => (
     <div key={entry.title + entry.meta} className="cv-entry">
-      {entry.compact ? (
-        <p>
-          <strong>{entry.title}</strong> <span className="cv-meta">
-            | <Meta text={entry.meta} />
-          </span>
-        </p>
-      ) : (
-        <>
-          <h3>{entry.title}</h3>
-          <p className="cv-meta">
-            <Meta text={entry.meta} />
-          </p>
-        </>
-      )}
+      <h3>
+        {entry.title}
+        {entry.subtitle && <span className="cv-subtitle"> | {entry.subtitle}</span>}
+      </h3>
+      <p className="cv-meta">
+        <Meta text={entry.meta} />
+      </p>
       {entry.bullets && (
         <ul>
           {entry.bullets.map((point) => (
@@ -45,7 +38,7 @@ function Entries({ entries }: { entries: CvEntry[] }) {
           ))}
         </ul>
       )}
-      {entry.text && <p>{entry.text}</p>}
+      {entry.text && <p className="cv-tech">{entry.text}</p>}
     </div>
   ));
 }

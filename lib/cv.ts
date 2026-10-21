@@ -15,9 +15,9 @@ export interface CvLink {
 }
 
 export interface CvEntry {
-  /** Title and meta on one line, for short entries such as degrees. */
-  compact?: boolean;
   title: string;
+  /** What it is, shown after the title in regular weight. */
+  subtitle?: string;
   /** Where and when, on the line under the title. */
   meta: string;
   /** A line under the bullets. */
@@ -41,6 +41,8 @@ export interface CvDocument {
 /** Separators a parser reads reliably: commas and hyphens instead of middle dots and long dashes. */
 const plain = (text: string) => text.replace(/\s·\s/g, ", ").replace(/\s[—–]\s/g, " - ");
 
+const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
 /** First sentence of a paragraph, for the one-line project descriptions. */
@@ -48,7 +50,6 @@ const firstSentence = (text: string) => text.split(/(?<=[.:])\s/)[0].replace(/:$
 
 // The detail line stays on the site: the CV keeps to one page.
 const toEntry = (entry: (typeof education)[number]): CvEntry => ({
-  compact: true,
   title: plain(entry.program),
   meta: `${entry.institution} | ${plain(entry.period)}`,
 });
@@ -81,11 +82,12 @@ export function buildCv(): CvDocument {
       const figures = study.stats?.map((stat) => `${stat.value} ${stat.label}`).join("; ");
       return [
         {
-          title: `${plain(study.name)}: ${firstSentence(study.summary).replace(/^A /, "a ").replace(/^The /, "the ")}`,
+          title: plain(study.name),
+          subtitle: capitalise(firstSentence(study.summary).replace(/^(A|An|The) /, "").replace(/\.$/, "")),
           meta: [plain(study.role), plain(study.context), study.period && plain(study.period)].filter(Boolean).join(" | "),
           bullets: [
             ...study.highlights.slice(0, cv.projectBullets),
-            ...(figures ? [`${figures.charAt(0).toUpperCase()}${figures.slice(1)}.`] : []),
+            ...(figures ? [`${capitalise(figures)}.`] : []),
           ],
           text: `Technologies: ${study.tech.join(", ")}.`,
         },

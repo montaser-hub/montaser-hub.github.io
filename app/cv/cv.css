@@ -110,6 +110,14 @@
   color: var(--soft);
 }
 
+.cv-subtitle {
+  font-weight: 400;
+}
+
+.cv-tech {
+  color: var(--soft);
+}
+
 .cv-nowrap {
   white-space: nowrap;
 }

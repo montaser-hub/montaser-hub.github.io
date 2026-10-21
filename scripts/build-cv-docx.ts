@@ -34,18 +34,16 @@ const heading = (label: string) =>
     children: [text(label.toUpperCase(), { size: 12, bold: true })],
   });
 
-function entry({ compact, title, meta, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
-  const spacing = { before: first ? 0 : space(3.5) };
-  const heading = compact
-    ? [new Paragraph({ spacing, children: [text(title, { bold: true }), text(` | ${meta}`, { color: SOFT })] })]
-    : [
-        new Paragraph({ keepNext: true, spacing, children: [text(title, { size: 11, bold: true })] }),
-        new Paragraph({ keepNext: true, children: [text(meta, { color: SOFT })] }),
-      ];
+function entry({ title, subtitle, meta, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
   return [
-    ...heading,
+    new Paragraph({
+      keepNext: true,
+      spacing: { before: first ? 0 : space(3.5) },
+      children: [text(title, { size: 11, bold: true }), ...(subtitle ? [text(` | ${subtitle}`, { size: 11 })] : [])],
+    }),
+    new Paragraph({ keepNext: true, children: [text(meta, { color: SOFT })] }),
     ...(bullets ?? []).map((point) => new Paragraph({ bullet: { level: 0 }, children: [text(point)] })),
-    ...(body ? [new Paragraph({ children: [text(body)] })] : []),
+    ...(body ? [new Paragraph({ children: [text(body, { color: SOFT })] })] : []),
   ];
 }
 

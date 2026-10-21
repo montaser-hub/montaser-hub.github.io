@@ -109,7 +109,6 @@ export const cv: Cv = {
   projectBullets: 1,
   extraSkills: {
     Languages: ["JavaScript", "TypeScript", "HTML", "CSS", "SASS", "SQL", "Python", "C"],
-    Cloud: ["Vercel", "Render", "Heroku", "Neon PostgreSQL", "Upstash Redis", "Cloudflare R2"],
     Practices: ["OOP", "SOLID", "Design patterns", "REST and GraphQL API design", "Git", "Linux"],
   },
   file: "/Montaser-Ismail-CV.pdf",
@@ -154,8 +153,8 @@ export const focusAreas: FocusArea[] = [
 ];
 
 export const techStack: TechStack = {
-  Frontend: ["React", "Next.js", "Angular", "TypeScript", "Redux Toolkit", "Tailwind CSS", "Framer Motion"],
-  Backend: ["Node.js", "NestJS", "Express", "GraphQL", "Socket.io", "Redis", "BullMQ", "JWT Auth"],
+  Frontend: ["React", "Next.js", "Angular", "TypeScript", "Redux Toolkit", "Material UI", "Tailwind CSS", "Framer Motion"],
+  Backend: ["Node.js", "NestJS", "Express", "GraphQL", "Socket.io", "Redis", "BullMQ", "JWT", "OAuth 2.0"],
   Data: ["MongoDB", "PostgreSQL", "Prisma", "MySQL", "SQL Server", "AWS S3"],
   "Testing & DevOps": ["Jest", "Vitest", "Jasmine", "Docker", "Nx Monorepos", "GitHub Actions", "CI/CD"],
 };
@@ -170,7 +169,7 @@ export const experience: Experience[] = [
       "Engineered dynamic UI components rendered entirely from JSON metadata schemas, reducing manual frontend coding effort by ~40%.",
       "Developed configurable form builders that auto-generate layouts from backend data models, cutting form development time by ~70% across 5+ form types.",
       "Built a high-performance rendering engine mapping server-side metadata to reusable React components, supporting 10+ reusable component types application-wide.",
-      "Led the front end of a client procurement platform: designed the interface in Figma and shipped it with 566 Vitest tests across 49 files.",
+      "Led the front end of a client procurement platform and designed its interface in Figma.",
     ],
   },
   {
@@ -222,7 +221,7 @@ export const caseStudies: CaseStudy[] = [
       "Contributed to the React dashboard (Redux Toolkit, calendar views) built mainly by a teammate; the Angular admin portal is a teammate's.",
     ],
     stats: [
-      { value: "76 / 102", label: "API commits are mine" },
+      { value: "76 / 102", label: "API commits authored" },
       { value: "3", label: "apps: API, React, Angular" },
     ],
     tech: ["Node.js", "Express", "MongoDB", "React", "Redux Toolkit", "Angular", "Nx", "Docker"],
@@ -292,7 +291,7 @@ export const caseStudies: CaseStudy[] = [
     stats: [
       { value: "639", label: "unit tests" },
       { value: "136", label: "documented endpoints" },
-      { value: "17 / 24", label: "commits are mine" },
+      { value: "17 / 24", label: "commits authored" },
     ],
     tech: ["NestJS", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Socket.io", "Jest"],
     note: "Source private",
@@ -312,7 +311,7 @@ export const caseStudies: CaseStudy[] = [
       "Role and permission system, audit log, Excel exports, background jobs on BullMQ and Redis, live updates over Server-Sent Events and push notifications.",
     ],
     stats: [
-      { value: "~470 / 754", label: "commits are mine" },
+      { value: "~470 / 754", label: "commits authored" },
       { value: "168", label: "API endpoints" },
       { value: "18 months", label: "on the product" },
     ],
