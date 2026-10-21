@@ -153,7 +153,7 @@ export const focusAreas: FocusArea[] = [
 ];
 
 export const techStack: TechStack = {
-  Frontend: ["React", "Next.js", "Angular", "TypeScript", "HTML", "CSS", "SASS", "Redux Toolkit", "Material UI", "Tailwind CSS", "Framer Motion"],
+  Frontend: ["React", "Next.js", "Angular", "TypeScript", "HTML", "CSS", "SASS", "Redux Toolkit", "Material UI", "Tailwind CSS"],
   Backend: ["Node.js", "NestJS", "Express", "GraphQL", "Socket.io", "Redis", "BullMQ", "JWT", "OAuth 2.0"],
   Data: ["MongoDB", "PostgreSQL", "SQL", "Prisma", "MySQL", "SQL Server", "AWS S3"],
   "Testing & DevOps": ["Jest", "Vitest", "Jasmine", "Docker", "Nx Monorepos", "GitHub Actions", "CI/CD"],
