@@ -2,6 +2,7 @@
  * Checks the built site the way a phone sees it: a 390x844 touch screen in
  * headless Chrome, driven over the DevTools protocol. It fails when
  *
+ *   - React does not start,
  *   - the page logs an error or throws,
  *   - the page scrolls sideways,
  *   - a tab bar button does not land on its section and mark it current,
@@ -96,11 +97,21 @@ async function openPage(options: { javascript: boolean }) {
     (await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result.value;
 
   await send("Runtime.enable");
+  await send("Page.enable");
   await send("Emulation.setDeviceMetricsOverride", { ...SCREEN, deviceScaleFactor: 2, mobile: true });
   await send("Emulation.setTouchEmulationEnabled", { enabled: true });
   await send("Emulation.setScriptExecutionDisabled", { value: !options.javascript });
   await send("Page.navigate", { url: URL_UNDER_TEST });
-  await sleep(4000);
+  await sleep(1000);
+
+  // Wait for React to start (MotionProvider marks the page), up to 20s on a slow network.
+  let hydrated = false;
+  for (let waited = 0; options.javascript && !hydrated && waited < 20_000; waited += 250) {
+    hydrated = (await (await send("Runtime.evaluate", { expression: 'document.documentElement.hasAttribute("data-hydrated")', returnByValue: true })).result.value) === true;
+    if (!hydrated) await sleep(250);
+  }
+  if (options.javascript) check(hydrated, "React starts");
+  await sleep(1500);
   // Smooth scrolling takes a moment: wait until the page stops moving.
   const settle = async () => {
     let last = -1;
