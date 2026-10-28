@@ -24,6 +24,8 @@ export interface CvEntry {
   place: string;
   /** When, on its own line under `place`: parsers that split a shared line misread both. */
   dates?: string;
+  /** Where to check the work: the live app if there is one, otherwise public code. */
+  link?: CvLink & { kind: "Live" | "Code" };
   /** A line under the bullets. */
   text?: string;
   bullets?: string[];
@@ -48,6 +50,14 @@ const plain = (text: string) => text.replace(/\s·\s/g, ", ").replace(/\s[—–
 const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+
+/** A live app beats public code as proof; private work has neither. */
+function proofLink(links: { label: string; href: string }[] | undefined): CvEntry["link"] {
+  const live = links?.find(({ label }) => /^live/i.test(label));
+  const code = links?.find(({ href }) => href.startsWith("https://github.com/"));
+  const pick = live ?? code;
+  return pick && { kind: live ? "Live" : "Code", text: bare(pick.href), href: pick.href };
+}
 
 /** First sentence of a paragraph, for the one-line project descriptions. */
 const firstSentence = (text: string) => text.split(/(?<=[.:])\s/)[0].replace(/:$/, ".");
@@ -94,6 +104,7 @@ export function buildCv(): CvDocument {
           // The role, then its context in brackets: one idea per line, dates apart.
           place: `${plain(study.role)} (${plain(study.context)})`,
           dates: study.period && plain(study.period),
+          link: proofLink(study.links),
           bullets: [
             ...study.highlights.slice(0, cv.projectBullets),
             ...(figures ? [`${capitalise(figures)}.`] : []),

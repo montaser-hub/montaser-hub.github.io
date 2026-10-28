@@ -36,7 +36,7 @@ const heading = (label: string) =>
     children: [text(label.toUpperCase(), { size: 12, bold: true })],
   });
 
-function entry({ title, subtitle, place, dates, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
+function entry({ title, subtitle, place, dates, link, text: body, bullets }: CvEntry, first: boolean): Paragraph[] {
   return [
     new Paragraph({
       keepNext: true,
@@ -45,6 +45,7 @@ function entry({ title, subtitle, place, dates, text: body, bullets }: CvEntry, 
     }),
     new Paragraph({ keepNext: true, children: [text(place, { color: SOFT })] }),
     ...(dates ? [new Paragraph({ keepNext: true, children: [text(dates, { color: SOFT })] })] : []),
+    ...(link ? [new Paragraph({ keepNext: true, children: [text(`${link.kind}: `, { color: SOFT }), linked(link, 10)] })] : []),
     // The two spaces after the bullet are about as wide as the hanging indent,
     // so wrapped lines line up with the first word.
     ...(bullets ?? []).map(

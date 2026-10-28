@@ -23,6 +23,11 @@ function Entries({ entries }: { entries: CvEntry[] }) {
       </h3>
       <p className="cv-meta">{entry.place}</p>
       {entry.dates && <p className="cv-meta">{entry.dates}</p>}
+      {entry.link && (
+        <p className="cv-meta">
+          {entry.link.kind}: <a href={entry.link.href}>{entry.link.text}</a>
+        </p>
+      )}
       {entry.bullets && (
         <ul>
           {entry.bullets.map((point) => (
