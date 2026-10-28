@@ -9,7 +9,7 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import BackToTop from "@/components/BackToTop";
-import { TechIconSprite } from "@/components/TechIcon";
+import TechIconSprite from "@/components/TechIconSprite";
 import { sections, type SectionId } from "@/lib/sections";
 
 /** What renders each section listed in lib/sections.ts; the page follows that list's order. */

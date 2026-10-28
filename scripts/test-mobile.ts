@@ -108,16 +108,19 @@ async function openPage(options: { javascript: boolean; reducedMotion?: boolean 
   await send("Emulation.setScriptExecutionDisabled", { value: !options.javascript });
   // Reduced motion makes the browser scroll instantly, so positions can be read at once.
   if (options.reducedMotion) await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  const loadStart = Date.now();
   await send("Page.navigate", { url: URL_UNDER_TEST });
   await sleep(1000);
 
-  // Wait for React to start (MotionProvider marks the page), up to 20s on a slow network.
+  // Wait for React to start (MotionProvider marks the page). A slow network can
+  // take a while to deliver the scripts, so allow a minute and report the time:
+  // until then the content shows (CSS fallback) but the tab bar does not follow.
   let hydrated = false;
-  for (let waited = 0; options.javascript && !hydrated && waited < 20_000; waited += 250) {
+  while (options.javascript && !hydrated && Date.now() - loadStart < 60_000) {
     hydrated = (await (await send("Runtime.evaluate", { expression: 'document.documentElement.hasAttribute("data-hydrated")', returnByValue: true })).result.value) === true;
     if (!hydrated) await sleep(250);
   }
-  if (options.javascript) check(hydrated, "React starts");
+  if (options.javascript) check(hydrated, `React starts${hydrated ? ` (after ${((Date.now() - loadStart) / 1000).toFixed(1)}s)` : " within 60s"}`);
   await sleep(1500);
   // Smooth scrolling takes a moment: wait until the page stops moving.
   const settle = async () => {
