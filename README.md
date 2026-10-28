@@ -15,7 +15,7 @@ component code.
 | `lib/project-mapper.ts` | Merges GitHub's repository list with the catalog (shared by the build and the browser) |
 | `lib/projects.ts` | Reads my public repos from the GitHub API at build time |
 | `hooks/useLiveProjects.ts` | Refreshes the project list from GitHub in the visitor's browser, so it is current without a redeploy |
-| `lib/sections.ts` | The page's sections; the page order and both navigation menus are generated from it |
+| `lib/sections.ts` | The page's sections and their tab-bar icons; the page order, the desktop sidebar and the mobile tab bar are generated from it |
 | `public/projects/` | Screenshots, matched to repos by file name (see its README) |
 
 Projects appear in three tiers: **Featured Work** (case studies), **Selected Projects** (cards that flip to a
@@ -38,13 +38,17 @@ next page load; add it to `SELECTED_REPOS` to promote it.
 | Change a button or small label ("Live demo", "Education", the footer line) | `copy` in `lib/data.ts` |
 | Change the icons on the GitHub profile's tech line | `STACK` in `scripts/build-profile-readme.ts` |
 
-After a change to `lib/`, run `npm run deploy` for the site and `npm run cv         # write the CV as PDF and Word from the site's data (needs Chrome)
-npm run profile:publish` for the GitHub
-profile. Repository changes on GitHub (a new repo, a new description) reach the site by themselves; the
+After a change to `lib/`, run `npm run deploy` for the site, `npm run cv` for the CV files and
+`npm run profile:publish` for the GitHub profile. Repository changes on GitHub (a new repo, a new description) reach the site by themselves; the
 profile's numbers and charts are read from GitHub each time `npm run profile:publish` runs.
 
 Animation respects the visitor's reduced-motion setting (`components/MotionProvider.tsx`, `app/globals.css`),
-and the WebGL globe pauses when it is off screen.
+and the WebGL globe pauses when it is off screen. Content that animates in stays visible if JavaScript is off
+or never loads.
+
+On phones and tablets the sections are an icon tab bar fixed to the bottom of the screen
+(`components/MobileNav.tsx`). To try the dev server on a phone, open `http://<this computer's IP>:3000` on the
+same Wi-Fi: `next.config.ts` allows the computer's own network addresses.
 
 ## Commands
 
@@ -53,6 +57,9 @@ npm install
 npm run dev        # http://localhost:3000
 npm run build      # static site in out/
 npm run lint
+npm run test:mobile                 # build, then check the site on a phone-sized headless Chrome (needs Chrome)
+npm run test:mobile -- <url>        # the same checks against a running site: the live one or the dev server
+npm run cv         # write the CV as PDF and Word from the site's data (needs Chrome)
 npm run images     # regenerate the link-preview image and PNG favicon
 npm run profile    # generate my GitHub profile README from the same data (needs the gh CLI)
 npm run profile:publish   # generate it and push it to the profile repository

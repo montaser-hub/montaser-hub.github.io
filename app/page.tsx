@@ -34,8 +34,9 @@ export default function Home() {
       <ScrollProgress />
       <BackToTop />
       <Sidebar />
+      {/* Site navigation sits beside <main>, not in it, so screen readers list it as its own landmark. */}
+      <MobileNav />
       <main id="content" className="pb-[calc(4rem+env(safe-area-inset-bottom))] px-6 sm:px-10 lg:ml-64 lg:pb-0 lg:px-12 xl:ml-72 xl:px-16">
-        <MobileNav />
         <Hero />
         {sections.map(({ id }) => {
           const View = SECTION_VIEWS[id];
