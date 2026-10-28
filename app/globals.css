@@ -115,6 +115,55 @@ body {
 }
 
 /*
+ * The hero's clipping box runs to the right edge of the screen, so the globe
+ * leaves the page off-screen instead of being cut at the content column (which
+ * left a dark strip over main's padding and the space beside the container).
+ * The padding keeps the text where it was; .hero-globe-frame keeps the globe
+ * where it was. --main-pad matches <main>'s horizontal padding in app/page.tsx.
+ */
+.hero-bleed {
+  --main-pad: 1.5rem;
+  --bleed: calc(var(--main-pad) + max(0px, (100vw - 80rem) / 2));
+  margin-right: calc(-1 * var(--bleed));
+  padding-right: var(--bleed);
+}
+
+@media (min-width: 40rem) {
+  .hero-bleed {
+    --main-pad: 2.5rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .hero-bleed {
+    --main-pad: 3rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  .hero-bleed {
+    --main-pad: 4rem;
+  }
+}
+
+/* The frame spans the whole bleed, so its mask only fades the bottom: on short
+   windows the globe is taller than the hero, and this avoids a straight cut.
+   The anchor inside ends at the content edge, where the globe is placed from. */
+.hero-globe-frame {
+  mask-image: linear-gradient(to bottom, black 82%, transparent);
+}
+
+.hero-globe-anchor {
+  right: var(--bleed);
+}
+
+/* 100vw counts the scrollbar, so the bleed can overshoot by its width: clip it
+   (clip, unlike hidden, keeps position: sticky working). */
+body {
+  overflow-x: clip;
+}
+
+/*
  * Fallback for the scroll-in animations. Framer Motion renders hidden content
  * with an inline opacity:0 (or a word pushed out of its box) and needs React to
  * reveal it. If React has not started 2.5s after load (a slow or blocked

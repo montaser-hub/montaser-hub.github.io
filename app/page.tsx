@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import Spotlight from "@/components/Spotlight";
 import BackToTop from "@/components/BackToTop";
+import { TechIconSprite } from "@/components/TechIcon";
 import { sections, type SectionId } from "@/lib/sections";
 
 /** What renders each section listed in lib/sections.ts; the page follows that list's order. */
@@ -30,6 +31,7 @@ export default function Home() {
       >
         Skip to content
       </a>
+      <TechIconSprite />
       <ScrollProgress />
       <Spotlight />
       <BackToTop />

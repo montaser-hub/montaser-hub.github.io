@@ -141,6 +141,34 @@ const ICONS: Record<string, IconType> = {
   rxjs: SiReactivex,
 };
 
+/**
+ * Every logo above, once each, with a stable id. The ids come from the map
+ * keys rather than component names, which minification changes, so the
+ * server and the browser always agree on them.
+ */
+const SPRITE_IDS = new Map<IconType, string>();
+for (const [key, icon] of [...Object.entries(EXACT_ICONS), ...Object.entries(ICONS)]) {
+  // "+" is spelled out so "c++" and "c" get different ids.
+  if (!SPRITE_IDS.has(icon)) SPRITE_IDS.set(icon, `tech-${normalize(key.replace(/\+/g, "plus"))}`);
+}
+
+/**
+ * Defines each logo once for the whole page; TechIcon points at these with
+ * <use>. Tech tags repeat the same logos dozens of times, and inline copies
+ * made up half the page's HTML. Render it once, anywhere on the page.
+ */
+export function TechIconSprite() {
+  return (
+    <svg aria-hidden="true" width="0" height="0" className="absolute">
+      {[...SPRITE_IDS].map(([Icon, id]) => (
+        <symbol key={id} id={id}>
+          <Icon size="100%" />
+        </symbol>
+      ))}
+    </svg>
+  );
+}
+
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
@@ -150,7 +178,7 @@ export function resolveTechIcon(tech: string): IconType | undefined {
 }
 
 /**
- * Renders a known brand icon for `tech`, or a monogram badge as a graceful
+ * Renders a known brand icon for `tech` (from TechIconSprite), or a monogram badge as a graceful
  * fallback for tokens with no icon (e.g. "SOLID Principles", "CI/CD") — so
  * every tech tag reads as an intentional badge rather than a missing icon.
  */
@@ -164,9 +192,11 @@ export default function TechIcon({
   const Icon = resolveTechIcon(tech);
 
   if (Icon) {
-    // Icon is a stable reference from a module-level lookup map, not defined during render.
-    // eslint-disable-next-line react-hooks/static-components
-    return <Icon className={className} aria-hidden="true" />;
+    return (
+      <svg className={className} aria-hidden="true">
+        <use href={`#${SPRITE_IDS.get(Icon)}`} />
+      </svg>
+    );
   }
 
   const initials = tech.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase() || "•";

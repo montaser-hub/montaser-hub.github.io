@@ -1,9 +1,9 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRef } from "react";
-import ConnectGlobe from "./ConnectGlobe";
 import Typewriter from "./Typewriter";
 import Magnetic from "./Magnetic";
 import { copy, cv, profile } from "@/lib/data";
@@ -11,11 +11,15 @@ import { sections } from "@/lib/sections";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Each line of the hero rises into place, one after the other.
+// The globe (WebGL) is decoration: load it after the page, off the critical path.
+const ConnectGlobe = dynamic(() => import("./ConnectGlobe"), { ssr: false });
+
+// Each line of the hero rises into place, one after the other. The text is
+// never transparent, so it shows in the first paint, before any script runs.
 const container = { hidden: {}, shown: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } } };
 const line = {
-  hidden: { opacity: 0, y: 16 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+  hidden: { y: 16 },
+  shown: { y: 0, transition: { duration: 0.6, ease: EASE } },
 };
 
 export default function Hero() {
@@ -32,10 +36,12 @@ export default function Hero() {
     <section
       ref={section}
       id="top"
-      className="relative flex flex-col justify-center overflow-hidden py-12 sm:py-20 md:min-h-[70vh] lg:min-h-[88vh]"
+      className="hero-bleed relative flex flex-col justify-center overflow-hidden py-12 sm:py-20 md:min-h-[70vh] lg:min-h-[88vh]"
     >
-      <motion.div style={{ scale: globeScale, opacity: globeOpacity }} className="absolute inset-0">
-        <ConnectGlobe />
+      <motion.div style={{ scale: globeScale, opacity: globeOpacity }} className="hero-globe-frame absolute inset-0">
+        <div className="hero-globe-anchor absolute inset-y-0 left-0">
+          <ConnectGlobe />
+        </div>
       </motion.div>
 
       {/* Keeps the text readable where it overlaps the globe. */}

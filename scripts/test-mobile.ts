@@ -9,6 +9,12 @@
  *   - with JavaScript off, content stays hidden.
  *
  *   npm run test:mobile   (builds first; needs Google Chrome or Chromium)
+ *
+ * Pass a URL to check a running server instead of the build, e.g. the dev
+ * server, where React also reports problems a production build stays quiet
+ * about (duplicate keys, hydration mismatches):
+ *
+ *   node scripts/test-mobile.ts http://localhost:3000/
  */
 import { spawn, execSync } from "node:child_process";
 import { createReadStream, existsSync, statSync } from "node:fs";
@@ -18,6 +24,7 @@ import { sections } from "../lib/sections.ts";
 
 const OUT = path.resolve(import.meta.dirname, "..", "out");
 const PORT = 4593;
+const URL_UNDER_TEST = process.argv[2] ?? `http://localhost:${PORT}/`;
 const DEBUG_PORT = 9334;
 const SCREEN = { width: 390, height: 844 };
 const TAB_BAR = 64;
@@ -47,7 +54,7 @@ const server = createServer((request, response) => {
   response.writeHead(200, { "Content-Type": TYPES[path.extname(file)] ?? "application/octet-stream" });
   createReadStream(file).pipe(response);
 });
-await new Promise<void>((resolve) => server.listen(PORT, resolve));
+if (!process.argv[2]) await new Promise<void>((resolve) => server.listen(PORT, resolve));
 
 const chromePath = ["google-chrome", "chromium", "chromium-browser"]
   .map((name) => { try { return execSync(`command -v ${name}`).toString().trim(); } catch { return ""; } })
@@ -92,7 +99,7 @@ async function openPage(options: { javascript: boolean }) {
   await send("Emulation.setDeviceMetricsOverride", { ...SCREEN, deviceScaleFactor: 2, mobile: true });
   await send("Emulation.setTouchEmulationEnabled", { enabled: true });
   await send("Emulation.setScriptExecutionDisabled", { value: !options.javascript });
-  await send("Page.navigate", { url: `http://localhost:${PORT}/` });
+  await send("Page.navigate", { url: URL_UNDER_TEST });
   await sleep(4000);
   // Smooth scrolling takes a moment: wait until the page stops moving.
   const settle = async () => {
@@ -151,7 +158,7 @@ try {
   plain.close();
 } finally {
   chrome.kill();
-  server.close();
+  if (server.listening) server.close();
 }
 
 if (failures.length) {
