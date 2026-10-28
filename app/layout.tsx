@@ -50,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {/* Without JavaScript the scroll-in animations never run: show their content at once. */}
         <noscript>
-          <style>{`[style*="opacity:0"],[style*="translateY(110%)"]{opacity:1!important;transform:none!important;filter:none!important}`}</style>
+          <style>{`[style*="opacity:0"],[style*="translateY(110%)"]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
         <MotionProvider>{children}</MotionProvider>
       </body>

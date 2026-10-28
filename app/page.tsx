@@ -8,7 +8,6 @@ import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
-import Spotlight from "@/components/Spotlight";
 import BackToTop from "@/components/BackToTop";
 import { TechIconSprite } from "@/components/TechIcon";
 import { sections, type SectionId } from "@/lib/sections";
@@ -33,7 +32,6 @@ export default function Home() {
       </a>
       <TechIconSprite />
       <ScrollProgress />
-      <Spotlight />
       <BackToTop />
       <Sidebar />
       <main id="content" className="pb-[calc(4rem+env(safe-area-inset-bottom))] px-6 sm:px-10 lg:ml-64 lg:pb-0 lg:px-12 xl:ml-72 xl:px-16">

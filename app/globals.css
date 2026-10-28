@@ -189,7 +189,6 @@ html:not([data-hydrated]) [style*="translateY(110%)"] {
   to {
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }
 
@@ -199,6 +198,14 @@ html:not([data-hydrated]) [style*="translateY(110%)"] {
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--surface);
   box-shadow: 0 -16px 32px -16px rgb(0 0 0 / 0.85);
+}
+
+/* Below lg the tab bar covers the bottom of the screen: keep anything scrolled
+   into view (a keyboard focus, a find-in-page match) clear of it. */
+@media (max-width: 63.99rem) {
+  html {
+    scroll-padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
 }
 
 /* A thin accent glow along the bar's top edge, strongest in the middle. */

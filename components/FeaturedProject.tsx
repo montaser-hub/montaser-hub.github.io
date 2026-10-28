@@ -152,7 +152,7 @@ export default function FeaturedProject() {
 
       {/* Jump list; sticks to the top of the screen while the projects are read.
           On phones it is a single row that scrolls sideways. */}
-      <div className="sticky top-0 z-20 -mx-6 mb-6 border-b border-border/40 bg-background/95 backdrop-blur sm:-mx-8 sm:mb-10 sm:px-4">
+      <div className="sticky top-0 z-20 -mx-6 mb-6 border-b border-border/40 bg-background sm:-mx-8 sm:mb-10 sm:px-4">
         <nav
           ref={jumpList}
           aria-label="Featured projects jump list"

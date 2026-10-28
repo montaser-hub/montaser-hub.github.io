@@ -7,6 +7,7 @@
  *   - the page scrolls sideways,
  *   - a tab bar button does not land on its section and mark it current,
  *   - any screen, scrolling top to bottom, shows no content,
+ *   - a keyboard stop has no name or focus ring, or lands behind the tab bar,
  *   - with JavaScript off, content stays hidden.
  *
  *   npm run test:mobile   (builds first; needs Google Chrome or Chromium)
@@ -64,7 +65,7 @@ if (!chromePath) throw new Error("Needs Google Chrome or Chromium on the PATH.")
 const chrome = spawn(chromePath, ["--headless=new", "--no-sandbox", "--hide-scrollbars", `--remote-debugging-port=${DEBUG_PORT}`, "about:blank"], { stdio: "ignore" });
 
 /** Opens a fresh tab and returns helpers to drive it. */
-async function openPage(options: { javascript: boolean }) {
+async function openPage(options: { javascript: boolean; reducedMotion?: boolean }) {
   let targets: { type: string; webSocketDebuggerUrl: string }[] = [];
   for (let tries = 0; !targets.length; tries++) {
     try {
@@ -101,6 +102,8 @@ async function openPage(options: { javascript: boolean }) {
   await send("Emulation.setDeviceMetricsOverride", { ...SCREEN, deviceScaleFactor: 2, mobile: true });
   await send("Emulation.setTouchEmulationEnabled", { enabled: true });
   await send("Emulation.setScriptExecutionDisabled", { value: !options.javascript });
+  // Reduced motion makes the browser scroll instantly, so positions can be read at once.
+  if (options.reducedMotion) await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await send("Page.navigate", { url: URL_UNDER_TEST });
   await sleep(1000);
 
@@ -122,7 +125,10 @@ async function openPage(options: { javascript: boolean }) {
       await sleep(150);
     }
   };
-  return { evaluate, settle, errors, close: () => socket.close() };
+  const pressTab = async () => {
+    for (const type of ["keyDown", "keyUp"]) await send("Input.dispatchKeyEvent", { type, key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+  };
+  return { evaluate, settle, pressTab, errors, close: () => socket.close() };
 }
 
 /** In-page: how many text blocks are on screen (above the tab bar) and not faded out. */
@@ -162,6 +168,36 @@ try {
   check(!empty.length, `every screen shows content${empty.length ? ` (empty at ${empty.join(", ")}px)` : ""}`);
   check(!page.errors.length, `no console errors${page.errors.length ? `: ${page.errors.join(" | ")}` : ""}`);
   page.close();
+
+  console.log("Keyboard");
+  const keys = await openPage({ javascript: true, reducedMotion: true });
+  const stops: { name: string; ring: boolean; visible: boolean }[] = [];
+  for (let i = 0; i < 200; i++) {
+    await keys.pressTab();
+    await sleep(60);
+    const stop = await keys.evaluate<{ name: string; ring: boolean; visible: boolean } | null>(`(() => {
+      const element = document.activeElement;
+      if (!element || element === document.body) return null;
+      const box = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      const bar = document.querySelector(".mobile-nav")?.getBoundingClientRect().top ?? innerHeight;
+      return {
+        name: (element.getAttribute("aria-label") || element.innerText || element.title || "").trim().replace(/\\s+/g, " ").slice(0, 40),
+        ring: style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0,
+        visible: element.closest(".mobile-nav") !== null || (box.top >= 0 && box.bottom <= bar + 1),
+      };
+    })()`);
+    if (!stop) break;
+    stops.push(stop);
+  }
+  const named = stops.filter((stop) => !stop.name);
+  const ringless = stops.filter((stop) => !stop.ring);
+  const hidden = stops.filter((stop) => !stop.visible);
+  check(stops.length > 20, `keyboard reaches the page's controls (${stops.length} stops)`);
+  check(!named.length, `every keyboard stop has a name${named.length ? ` (${named.length} without)` : ""}`);
+  check(!ringless.length, `every keyboard stop shows a focus ring${ringless.length ? `: ${ringless.map((stop) => stop.name).join(", ")}` : ""}`);
+  check(!hidden.length, `focus never lands behind the tab bar or off screen${hidden.length ? `: ${hidden.map((stop) => stop.name).join(", ")}` : ""}`);
+  keys.close();
 
   console.log("Without JavaScript");
   const plain = await openPage({ javascript: false });

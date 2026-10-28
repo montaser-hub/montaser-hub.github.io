@@ -51,7 +51,7 @@ export default function About() {
         </Reveal>
 
         <Reveal className="lg:col-span-2" delay={0.1}>
-          <div className="spot-card rounded-lg border border-border bg-surface p-6">
+          <div className="rounded-lg border border-border bg-surface p-6">
             <h3 className="mb-4 text-sm font-semibold text-foreground">
               {copy.labels.techStack}
             </h3>

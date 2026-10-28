@@ -73,7 +73,7 @@ function CardFront({
   clamp?: boolean;
 }) {
   return (
-    <div className="spot-card flex h-full flex-col rounded-lg border border-border bg-surface p-6 transition-colors duration-200 group-hover:bg-surface-hover">
+    <div className="flex h-full flex-col rounded-lg border border-border bg-surface p-6 transition-colors duration-200 group-hover:bg-surface-hover">
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-medium text-foreground">{project.name}</h3>
         {/* The arrow promises a link, so only show it when there is one. */}
