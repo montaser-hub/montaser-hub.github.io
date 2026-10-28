@@ -1,19 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { IconType } from "react-icons";
-import { HiBriefcase, HiEnvelope, HiSquares2X2, HiStar, HiUser } from "react-icons/hi2";
 import { useActiveSection } from "@/hooks/useActiveSection";
-import { sections, type SectionId } from "@/lib/sections";
-
-/** Heroicons (solid), the set Tailwind UI is drawn with. */
-const ICONS: Record<SectionId, IconType> = {
-  about: HiUser,
-  experience: HiBriefcase,
-  work: HiStar,
-  projects: HiSquares2X2,
-  contact: HiEnvelope,
-};
+import { sections } from "@/lib/sections";
 
 /**
  * Tab bar for phones and tablets: one icon per section, fixed to the bottom
@@ -31,9 +20,8 @@ export default function MobileNav() {
       className="mobile-nav fixed inset-x-0 bottom-0 z-40 border-t border-border/80 lg:hidden"
     >
       <ul className="mx-auto flex max-w-md items-stretch justify-around px-3">
-        {sections.map(({ id, label }) => {
+        {sections.map(({ id, label, icon: Icon }) => {
           const isActive = id === active;
-          const Icon = ICONS[id];
           return (
             <li key={id} className="flex-1">
               <a

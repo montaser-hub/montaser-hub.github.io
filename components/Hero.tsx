@@ -60,7 +60,7 @@ export default function Hero() {
         <motion.h3
           variants={line}
           // Two lines reserved, so phrases of different lengths don't move the page.
-          className="mt-3 min-h-[2.4em] text-2xl font-bold tracking-tight text-muted sm:text-4xl"
+          className="mt-3 min-h-[2lh] text-2xl font-bold tracking-tight text-muted sm:text-4xl"
         >
           {copy.hero.headlineLead} <Typewriter phrases={copy.hero.headlinePhrases} />
         </motion.h3>
