@@ -23,7 +23,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative isolate scroll-mt-20 flex flex-col items-center py-32 text-center"
+      className="relative isolate flex flex-col items-center py-20 text-center sm:py-32"
     >
       {/* Soft halo behind the closing call to action. */}
       <div
@@ -81,7 +81,7 @@ export default function Contact() {
           </button>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted">
+        <div className="mt-8 flex flex-col items-center gap-1 text-sm text-muted sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6">
           <a href={`mailto:${profile.email}`} className="link-underline py-2">
             {profile.email}
           </a>

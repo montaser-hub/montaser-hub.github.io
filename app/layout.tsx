@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "@/components/MotionProvider";
@@ -35,6 +35,12 @@ export const metadata: Metadata = {
   },
 };
 
+// "cover" lets the mobile tab bar reach the screen's bottom edge; it pads itself clear of the home indicator.
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  themeColor: "#05070a",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -42,6 +48,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        {/* Without JavaScript the scroll-in animations never run: show their content at once. */}
+        <noscript>
+          <style>{`[style*="opacity:0"],[style*="translateY(110%)"]{opacity:1!important;transform:none!important;filter:none!important}`}</style>
+        </noscript>
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>

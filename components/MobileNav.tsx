@@ -1,47 +1,73 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import type { IconType } from "react-icons";
+import { HiBriefcase, HiEnvelope, HiSquares2X2, HiStar, HiUser } from "react-icons/hi2";
 import { useActiveSection } from "@/hooks/useActiveSection";
-import { sections } from "@/lib/sections";
+import { sections, type SectionId } from "@/lib/sections";
 
-/** Sticky section menu for phones and tablets; follows the section being read. */
+/** Heroicons (solid), the set Tailwind UI is drawn with. */
+const ICONS: Record<SectionId, IconType> = {
+  about: HiUser,
+  experience: HiBriefcase,
+  work: HiStar,
+  projects: HiSquares2X2,
+  contact: HiEnvelope,
+};
+
+/**
+ * Tab bar for phones and tablets: one icon per section, fixed to the bottom
+ * of the screen where the thumb reaches. The section being read sits on a
+ * solid accent tile that slides from icon to icon as the page scrolls; the
+ * others light up on hover and press. Labels are for screen readers and the
+ * long-press tooltip; the bar shows icons only.
+ */
 export default function MobileNav() {
   const active = useActiveSection();
-  const row = useRef<HTMLElement>(null);
-  const activeLink = useRef<HTMLAnchorElement>(null);
-
-  // Keep the active item in view when the row of links is wider than the
-  // screen. Only the row itself is scrolled: scrollIntoView would also touch
-  // the page and cancel a smooth scroll that is still on its way to a section.
-  useEffect(() => {
-    const nav = row.current;
-    const link = activeLink.current;
-    if (!nav || !link) return;
-    nav.scrollTo({ left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2, behavior: "smooth" });
-  }, [active]);
 
   return (
     <nav
-      ref={row}
       aria-label="Sections"
-      className="sticky top-0 z-30 -mx-6 mb-4 flex justify-between gap-1 overflow-x-auto border-b border-border bg-background/90 px-3 py-2 backdrop-blur sm:-mx-10 sm:px-8 lg:hidden"
+      className="mobile-nav fixed inset-x-0 bottom-0 z-40 border-t border-border/80 lg:hidden"
     >
-      {sections.map(({ id, label }) => {
-        const isActive = id === active;
-        return (
-          <a
-            key={id}
-            ref={isActive ? activeLink : undefined}
-            href={`#${id}`}
-            aria-current={isActive ? "location" : undefined}
-            className={`shrink-0 rounded-md px-2.5 py-2.5 text-sm font-medium transition-colors duration-200 ${
-              isActive ? "bg-surface-hover text-accent" : "text-muted hover:text-foreground"
-            }`}
-          >
-            {label}
-          </a>
-        );
-      })}
+      <ul className="mx-auto flex max-w-md items-stretch justify-around px-3">
+        {sections.map(({ id, label }) => {
+          const isActive = id === active;
+          const Icon = ICONS[id];
+          return (
+            <li key={id} className="flex-1">
+              <a
+                href={`#${id}`}
+                aria-label={label}
+                title={label}
+                aria-current={isActive ? "location" : undefined}
+                // A short tap vibration on Android; other browsers ignore it.
+                onClick={() => navigator.vibrate?.(8)}
+                className="group relative flex h-16 items-center justify-center"
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="mobile-nav-highlight"
+                    aria-hidden="true"
+                    className="absolute h-11 w-14 rounded-xl bg-accent shadow-[0_6px_18px_-6px_rgb(246_130_31/0.6)]"
+                    transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                  />
+                )}
+                <span
+                  aria-hidden="true"
+                  className={`relative grid h-11 w-14 place-items-center rounded-xl transition-colors duration-200 group-active:scale-95 ${
+                    isActive
+                      ? "text-background"
+                      : "text-muted-dim group-hover:bg-surface-hover group-hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="h-6 w-6" />
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }

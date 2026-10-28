@@ -114,6 +114,53 @@ body {
   position: relative;
 }
 
+/*
+ * Fallback for the scroll-in animations. Framer Motion renders hidden content
+ * with an inline opacity:0 (or a word pushed out of its box) and needs React to
+ * reveal it. If React has not started 2.5s after load (a slow or blocked
+ * script), show everything rather than an empty page. MotionProvider sets
+ * data-hydrated once React runs, which turns this off. No-JS visitors get the
+ * same through the <noscript> style in app/layout.tsx, with no wait.
+ */
+html:not([data-hydrated]) [style*="opacity:0"],
+html:not([data-hydrated]) [style*="translateY(110%)"] {
+  animation: reveal-fallback 0.4s ease-out 2.5s forwards;
+}
+
+/* Sideways-scrolling rows (the Featured Work jump list on phones). */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes reveal-fallback {
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Mobile tab bar (components/MobileNav.tsx): solid, so nothing scrolling under
+   it shows through, and padded clear of the iPhone home indicator. */
+.mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  box-shadow: 0 -16px 32px -16px rgb(0 0 0 / 0.85);
+}
+
+/* A thin accent glow along the bar's top edge, strongest in the middle. */
+.mobile-nav::before {
+  content: "";
+  position: absolute;
+  inset: -1px 15% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(246 130 31 / 0.55), transparent);
+}
+
 .link-underline::after {
   content: "";
   position: absolute;

@@ -9,6 +9,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * Appears after the first screen and returns to the top. A thin ring around
  * the button fills as the page is read, so it doubles as a progress meter.
  * Neutral glass by default; the accent only shows in the ring and on hover.
+ * Desktop only: on phones and tablets the tab bar (MobileNav) takes its place.
  */
 export default function BackToTop() {
   const { scrollY, scrollYProgress } = useScroll();
@@ -26,7 +27,7 @@ export default function BackToTop() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.85, y: 12 }}
           transition={{ duration: 0.35, ease: EASE }}
-          className="back-to-top group fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full"
+          className="back-to-top group fixed bottom-6 right-6 z-40 hidden h-12 w-12 place-items-center rounded-full lg:grid"
         >
           <svg viewBox="0 0 48 48" className="absolute inset-0 h-full w-full -rotate-90" aria-hidden="true">
             <defs>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
@@ -18,7 +18,7 @@ function CaseStudyItem({ study, priority, isLast }: { study: CaseStudy; priority
   return (
     <article
       id={anchorId(study)}
-      className={`scroll-mt-32 py-8 ${!isLast ? "border-b border-border/30 pb-20 mb-20" : ""}`}
+      className={`scroll-mt-16 pt-2 pb-8 sm:scroll-mt-32 sm:pt-8 ${!isLast ? "mb-14 border-b border-border/30 pb-14 sm:mb-20 sm:pb-20" : ""}`}
     >
       {/* Header: Context, Title, Links */}
       <header className="flex flex-wrap items-start justify-between gap-4">
@@ -114,6 +114,16 @@ function CaseStudyItem({ study, priority, isLast }: { study: CaseStudy; priority
 
 export default function FeaturedProject() {
   const [activeId, setActiveId] = useState<string>("");
+  const jumpList = useRef<HTMLElement>(null);
+
+  // On phones the jump list is one scrolling row: keep the active project in
+  // view. Only the row scrolls, so a smooth page scroll in progress is not cut short.
+  useEffect(() => {
+    const row = jumpList.current;
+    const button = row?.querySelector<HTMLElement>("[aria-current]");
+    if (!row || !button || row.scrollWidth <= row.clientWidth) return;
+    row.scrollTo({ left: button.offsetLeft - (row.clientWidth - button.offsetWidth) / 2, behavior: "smooth" });
+  }, [activeId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -137,12 +147,17 @@ export default function FeaturedProject() {
   const scrollToProject = (study: CaseStudy) => document.getElementById(anchorId(study))?.scrollIntoView();
 
   return (
-    <section id="work" className="scroll-mt-20 py-24">
+    <section id="work" className="py-16 sm:py-24">
       <SectionHeading section="work" />
 
-      {/* Jump list; below the lg breakpoint it sticks under the section menu (MobileNav) */}
-      <div className="sticky top-14 z-20 lg:top-0 -mx-4 mb-10 border-b border-border/40 bg-background/90 px-4 py-3 backdrop-blur sm:-mx-8 sm:px-8">
-        <nav aria-label="Featured projects jump list" className="flex flex-wrap items-center gap-2 sm:gap-4">
+      {/* Jump list; sticks to the top of the screen while the projects are read.
+          On phones it is a single row that scrolls sideways. */}
+      <div className="sticky top-0 z-20 -mx-6 mb-6 border-b border-border/40 bg-background/95 backdrop-blur sm:-mx-8 sm:mb-10 sm:px-4">
+        <nav
+          ref={jumpList}
+          aria-label="Featured projects jump list"
+          className="no-scrollbar flex items-center gap-1 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] sm:flex-wrap sm:gap-4 sm:overflow-visible sm:py-1.5 sm:[mask-image:none]"
+        >
           {caseStudies.map((study, index) => {
             const targetId = anchorId(study);
             const isActive = activeId === targetId;
@@ -153,7 +168,7 @@ export default function FeaturedProject() {
                 type="button"
                 onClick={() => scrollToProject(study)}
                 aria-current={isActive ? "location" : undefined}
-                className={`group relative flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-all duration-200 sm:text-sm ${
+                className={`group relative flex h-11 shrink-0 items-center gap-2 rounded-md px-2.5 text-sm font-semibold transition-colors duration-200 ${
                   isActive ? "text-foreground" : "text-muted-dim hover:text-foreground"
                 }`}
               >
@@ -165,7 +180,7 @@ export default function FeaturedProject() {
                 {isActive && (
                   <motion.span
                     layoutId="activeFeaturedScrollSpy"
-                    className="absolute inset-x-0 -bottom-[13px] h-0.5 bg-accent"
+                    className="absolute inset-x-2.5 bottom-0 h-0.5 rounded-full bg-accent"
                     transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   />
                 )}

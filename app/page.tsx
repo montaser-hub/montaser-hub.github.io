@@ -34,7 +34,7 @@ export default function Home() {
       <Spotlight />
       <BackToTop />
       <Sidebar />
-      <main id="content" className="px-6 sm:px-10 lg:ml-64 lg:px-12 xl:ml-72 xl:px-16">
+      <main id="content" className="pb-[calc(4rem+env(safe-area-inset-bottom))] px-6 sm:px-10 lg:ml-64 lg:pb-0 lg:px-12 xl:ml-72 xl:px-16">
         <MobileNav />
         <Hero />
         {sections.map(({ id }) => {

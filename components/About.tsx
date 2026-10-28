@@ -7,7 +7,7 @@ import Marquee from "./Marquee";
 
 export default function About() {
   return (
-    <section id="about" className="scroll-mt-20 py-24">
+    <section id="about" className="py-16 sm:py-24">
       <SectionHeading section="about" />
 
       <Reveal>
