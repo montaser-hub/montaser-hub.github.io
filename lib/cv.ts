@@ -6,7 +6,8 @@
  * It is written for applicant-tracking systems as much as for people: one
  * column, standard headings, "Mon YYYY - Mon YYYY" dates, and no symbols a
  * parser might trip on (see `plain`). Everything is plain text in reading
- * order: no tab stops or right-aligned columns, and bullets are a typed "•".
+ * order: no tab stops or right-aligned columns, dates on a line of their
+ * own, and bullets are a typed "•".
  */
 import { caseStudies, contacts, cv, education, experience, profile, techStack } from "./data.ts";
 
@@ -21,7 +22,7 @@ export interface CvEntry {
   subtitle?: string;
   /** Where: the company, school or role and context, on the line under the title. */
   place: string;
-  /** When; printed after `place` on the same line (see `metaLine`). */
+  /** When, on its own line under `place`: parsers that split a shared line misread both. */
   dates?: string;
   /** A line under the bullets. */
   text?: string;
@@ -41,13 +42,6 @@ export interface CvDocument {
   certifications: CvEntry[];
 }
 
-/**
- * The line under an entry's title: where, then when, joined by " | ". A typed
- * separator rather than a tab or a right-aligned column, which some parsers
- * split wrongly or run together.
- */
-export const metaLine = ({ place, dates }: CvEntry) => [place, dates].filter(Boolean).join(" | ");
-
 /** Separators a parser reads reliably: commas and hyphens instead of middle dots and long dashes. */
 const plain = (text: string) => text.replace(/\s·\s/g, ", ").replace(/\s[—–]\s/g, " - ");
 
@@ -59,10 +53,11 @@ const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\
 const firstSentence = (text: string) => text.split(/(?<=[.:])\s/)[0].replace(/:$/, ".");
 
 // The detail line stays on the site: the CV keeps to one page.
+// School and years share a line, the usual form for education; jobs and
+// projects keep their dates on a line of their own.
 const toEntry = (entry: (typeof education)[number]): CvEntry => ({
   title: plain(entry.program),
-  place: entry.institution,
-  dates: plain(entry.period),
+  place: `${entry.institution} | ${plain(entry.period)}`,
 });
 
 export function buildCv(): CvDocument {
@@ -96,7 +91,8 @@ export function buildCv(): CvDocument {
         {
           title: plain(study.name),
           subtitle: capitalise(firstSentence(study.summary).replace(/^(A|An|The) /, "").replace(/\.$/, "")),
-          place: `${plain(study.role)} - ${plain(study.context)}`,
+          // The role, then its context in brackets: one idea per line, dates apart.
+          place: `${plain(study.role)} (${plain(study.context)})`,
           dates: study.period && plain(study.period),
           bullets: [
             ...study.highlights.slice(0, cv.projectBullets),

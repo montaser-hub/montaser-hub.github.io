@@ -3,7 +3,7 @@
  * and just the sheet when printed.
  *
  * Type follows common CV guidance: one standard font (Arial), body 10pt,
- * job titles 11pt, section headings 12pt, name 20pt, single line spacing.
+ * job titles 11pt, section headings 12pt, name 20pt, line spacing 1.12.
  * Sizes are in points so the PDF matches. Keep it to one page; if it ever
  * runs over, entries never split and headings stay with what follows.
  */
@@ -48,7 +48,7 @@
   /* A font every system has: it embeds in the PDF as ordinary text any parser can read. */
   font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
   font-size: 10pt;
-  line-height: 1.15;
+  line-height: 1.12;
 }
 
 .cv-sheet header {
@@ -150,7 +150,7 @@
 /* The page margins come from @page when printed, so the second page has them too. */
 @page {
   size: A4;
-  margin: 10mm 15mm;
+  margin: 8mm 15mm;
 }
 
 @media print {

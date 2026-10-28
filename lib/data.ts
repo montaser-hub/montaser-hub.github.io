@@ -167,10 +167,10 @@ export const experience: Experience[] = [
     start: "Dec 2025",
     end: "Present",
     highlights: [
-      "Engineered dynamic UI components rendered entirely from JSON metadata schemas, reducing manual frontend coding effort by ~40%.",
-      "Developed configurable form builders that auto-generate layouts from backend data models, cutting form development time by ~70% across 5+ form types.",
-      "Built a high-performance rendering engine mapping server-side metadata to reusable React components, supporting 10+ reusable component types application-wide.",
-      "Led the front end of a client procurement platform and designed its interface in Figma.",
+      "Engineered UI components rendered from JSON metadata schemas, cutting manual frontend coding by ~40%.",
+      "Built form builders that generate layouts from data models, cutting build time by ~70% on 5+ form types.",
+      "Built a rendering engine mapping server-side metadata to 10+ reusable React component types.",
+      "Led the front end of a client procurement platform, designed in Figma and shipped with 566 Vitest tests.",
     ],
   },
   {
@@ -181,8 +181,8 @@ export const experience: Experience[] = [
     end: "Mar 2026",
     highlights: [
       "Architected modular backend services with Node.js and REST APIs, serving 500+ concurrent API requests.",
-      "Built dynamic report generation features with complex queries and aggregations, processing across 100K+ records.",
-      "Delivered the \"Performance\" feature using MongoDB aggregations to generate employee insights and support admin approvals, cutting manual HR reporting time by ~60%.",
+      "Built dynamic report generation with complex queries and aggregations over 100K+ records.",
+      "Delivered \"Performance\" insights and approvals via MongoDB aggregations, cutting HR reporting time by ~60%.",
     ],
   },
 ];

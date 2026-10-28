@@ -11,7 +11,7 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { AlignmentType, BorderStyle, Document, ExternalHyperlink, Packer, Paragraph, TextRun, convertMillimetersToTwip } from "docx";
-import { buildCv, metaLine, type CvEntry, type CvLink } from "../lib/cv.ts";
+import { buildCv, type CvEntry, type CvLink } from "../lib/cv.ts";
 import { cv } from "../lib/data.ts";
 
 const FONT = "Arial";
@@ -43,7 +43,8 @@ function entry({ title, subtitle, place, dates, text: body, bullets }: CvEntry, 
       spacing: { before: first ? 0 : space(3.5) },
       children: [text(title, { size: 11, bold: true }), ...(subtitle ? [text(`: ${subtitle}`, { size: 11 })] : [])],
     }),
-    new Paragraph({ keepNext: true, children: [text(metaLine({ title, place, dates }), { color: SOFT })] }),
+    new Paragraph({ keepNext: true, children: [text(place, { color: SOFT })] }),
+    ...(dates ? [new Paragraph({ keepNext: true, children: [text(dates, { color: SOFT })] })] : []),
     // The two spaces after the bullet are about as wide as the hanging indent,
     // so wrapped lines line up with the first word.
     ...(bullets ?? []).map(
@@ -64,7 +65,7 @@ const file = new Document({
   description: doc.summary,
   sections: [
     {
-      properties: { page: { size: { width: convertMillimetersToTwip(210), height: convertMillimetersToTwip(297) }, margin: { top: convertMillimetersToTwip(10), bottom: convertMillimetersToTwip(10), left: margin, right: margin } } },
+      properties: { page: { size: { width: convertMillimetersToTwip(210), height: convertMillimetersToTwip(297) }, margin: { top: convertMillimetersToTwip(8), bottom: convertMillimetersToTwip(8), left: margin, right: margin } } },
       children: [
         new Paragraph({ alignment: AlignmentType.CENTER, children: [text(doc.name, { size: 20, bold: true })] }),
         new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: space(2), after: space(3) }, children: [text(doc.headline, { size: 12, bold: true, color: SOFT })] }),
