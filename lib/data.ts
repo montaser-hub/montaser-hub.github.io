@@ -176,7 +176,7 @@ export const experience: Experience[] = [
   {
     company: "Qyser Tech.",
     role: "Backend Developer",
-    type: "Part-time, Remote",
+    type: "Part-time, concurrent, Remote",
     start: "Sep 2024",
     end: "Mar 2026",
     highlights: [

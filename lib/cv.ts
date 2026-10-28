@@ -5,7 +5,8 @@
  *
  * It is written for applicant-tracking systems as much as for people: one
  * column, standard headings, "Mon YYYY - Mon YYYY" dates, and no symbols a
- * parser might trip on (see `plain`).
+ * parser might trip on (see `plain`). Everything is plain text in reading
+ * order: no tab stops or right-aligned columns, and bullets are a typed "•".
  */
 import { caseStudies, contacts, cv, education, experience, profile, techStack } from "./data.ts";
 
@@ -20,7 +21,7 @@ export interface CvEntry {
   subtitle?: string;
   /** Where: the company, school or role and context, on the line under the title. */
   place: string;
-  /** When, set against the right margin of that line. Kept apart from `place` so no pipe joins them. */
+  /** When; printed after `place` on the same line (see `metaLine`). */
   dates?: string;
   /** A line under the bullets. */
   text?: string;
@@ -39,6 +40,13 @@ export interface CvDocument {
   education: CvEntry[];
   certifications: CvEntry[];
 }
+
+/**
+ * The line under an entry's title: where, then when, joined by " | ". A typed
+ * separator rather than a tab or a right-aligned column, which some parsers
+ * split wrongly or run together.
+ */
+export const metaLine = ({ place, dates }: CvEntry) => [place, dates].filter(Boolean).join(" | ");
 
 /** Separators a parser reads reliably: commas and hyphens instead of middle dots and long dashes. */
 const plain = (text: string) => text.replace(/\s·\s/g, ", ").replace(/\s[—–]\s/g, " - ");
@@ -76,7 +84,7 @@ export function buildCv(): CvDocument {
     skills: Object.entries({ ...techStack, ...cv.extraSkills }).map(([group, items]) => ({ group, items: items.join(", ") })),
     experience: experience.map((job) => ({
       title: job.role,
-      place: job.type ? `${job.company} - ${job.type}` : job.company,
+      place: job.type ? `${job.company} | ${job.type}` : job.company,
       dates: `${job.start} - ${job.end}`,
       bullets: job.highlights,
     })),

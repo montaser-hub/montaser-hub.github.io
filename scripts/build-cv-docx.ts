@@ -3,21 +3,21 @@
  * (lib/cv.ts). Some applicant-tracking systems read .docx more reliably than
  * PDF, so applications that accept Word should get this file.
  *
- * Plain paragraphs only: no tables, text boxes, columns, headers or footers.
+ * Plain paragraphs only: no tables, text boxes, columns, headers, footers,
+ * tab stops or Word list numbering. Bullets are a typed "•", as in the PDF,
+ * so every parser sees the marker and a space before each point.
  * Sizes match app/cv/cv.css. Run through `npm run cv`.
  */
 import { writeFileSync } from "node:fs";
 import path from "node:path";
-import { AlignmentType, BorderStyle, Document, ExternalHyperlink, Packer, Paragraph, Tab, TabStopType, TextRun, convertMillimetersToTwip } from "docx";
-import { buildCv, type CvEntry, type CvLink } from "../lib/cv.ts";
+import { AlignmentType, BorderStyle, Document, ExternalHyperlink, Packer, Paragraph, TextRun, convertMillimetersToTwip } from "docx";
+import { buildCv, metaLine, type CvEntry, type CvLink } from "../lib/cv.ts";
 import { cv } from "../lib/data.ts";
 
 const FONT = "Arial";
 const INK = "111318";
 const SOFT = "3F4552";
 const LINK = "0B4FB3";
-/** A4 width less the 15mm side margins. */
-const TEXT_WIDTH = convertMillimetersToTwip(210 - 2 * 15);
 /** Word measures type in half-points and spacing in twentieths of a point. */
 const pt = (points: number) => points * 2;
 const space = (points: number) => points * 20;
@@ -43,18 +43,12 @@ function entry({ title, subtitle, place, dates, text: body, bullets }: CvEntry, 
       spacing: { before: first ? 0 : space(3.5) },
       children: [text(title, { size: 11, bold: true }), ...(subtitle ? [text(`: ${subtitle}`, { size: 11 })] : [])],
     }),
-    // Dates sit on a right tab stop at the text's right edge, as on the page.
-    // A space goes before the tab so a parser that drops tabs still sees two
-    // words, not "Co.Dec 2025".
-    new Paragraph({
-      keepNext: true,
-      tabStops: [{ type: TabStopType.RIGHT, position: TEXT_WIDTH }],
-      children: [
-        text(place, { color: SOFT }),
-        ...(dates ? [new TextRun({ children: [" ", new Tab(), dates], font: FONT, size: pt(10), color: SOFT })] : []),
-      ],
-    }),
-    ...(bullets ?? []).map((point) => new Paragraph({ bullet: { level: 0 }, children: [text(point)] })),
+    new Paragraph({ keepNext: true, children: [text(metaLine({ title, place, dates }), { color: SOFT })] }),
+    // The two spaces after the bullet are about as wide as the hanging indent,
+    // so wrapped lines line up with the first word.
+    ...(bullets ?? []).map(
+      (point) => new Paragraph({ indent: { left: space(9), hanging: space(9) }, children: [text(`•  ${point}`)] })
+    ),
     ...(body ? [new Paragraph({ children: [text(body, { color: SOFT })] })] : []),
   ];
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { buildCv, type CvEntry } from "@/lib/cv";
+import { buildCv, metaLine, type CvEntry } from "@/lib/cv";
 import { cv, profile } from "@/lib/data";
 import "./cv.css";
 
@@ -21,10 +21,7 @@ function Entries({ entries }: { entries: CvEntry[] }) {
         {entry.title}
         {entry.subtitle && <span className="cv-subtitle">: {entry.subtitle}</span>}
       </h3>
-      <p className="cv-meta">
-        <span>{entry.place}</span>
-        {entry.dates && <span className="cv-dates">{entry.dates}</span>}
-      </p>
+      <p className="cv-meta">{metaLine(entry)}</p>
       {entry.bullets && (
         <ul>
           {entry.bullets.map((point) => (

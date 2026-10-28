@@ -106,19 +106,8 @@
 }
 
 .cv-meta {
-  display: flex;
-  /* On a narrow screen the dates drop under a long place instead of squeezing it. */
-  flex-wrap: wrap;
-  justify-content: space-between;
-  column-gap: 1em;
   margin-bottom: 1.5pt;
   color: var(--soft);
-}
-
-/* A date range never breaks. */
-.cv-dates {
-  flex-shrink: 0;
-  white-space: nowrap;
 }
 
 .cv-subtitle {
