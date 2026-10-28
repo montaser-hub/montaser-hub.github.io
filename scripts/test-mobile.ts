@@ -184,6 +184,8 @@ try {
       const element = document.activeElement;
       if (!element || element === document.body || element.hasAttribute("data-test-visited")) return null;
       element.setAttribute("data-test-visited", "");
+      // The dev server's own overlay (the Next.js badge) is not part of the site.
+      if (element.tagName === "NEXTJS-PORTAL") return { name: "next-dev-overlay", ring: true, visible: true, devOverlay: true };
       const box = element.getBoundingClientRect();
       const style = getComputedStyle(element);
       const bar = document.querySelector(".mobile-nav")?.getBoundingClientRect().top ?? innerHeight;
@@ -194,6 +196,7 @@ try {
       };
     })()`);
     if (!stop) break;
+    if ("devOverlay" in stop) continue;
     stops.push(stop);
   }
   const named = stops.filter((stop) => !stop.name);
