@@ -12,11 +12,12 @@
  *
  *   npm run test:mobile   (builds first; needs Google Chrome or Chromium)
  *
- * Pass a URL to check a running server instead of the build, e.g. the dev
- * server, where React also reports problems a production build stays quiet
- * about (duplicate keys, hydration mismatches):
+ * Pass a URL to check a running site instead of a fresh build: the live site,
+ * or the dev server, where React also reports problems a production build
+ * stays quiet about (duplicate keys, hydration mismatches):
  *
- *   node scripts/test-mobile.ts http://localhost:3000/
+ *   npm run test:mobile -- https://montaser-hub.github.io/
+ *   npm run test:mobile -- http://localhost:3000/
  */
 import { spawn, execSync } from "node:child_process";
 import { createReadStream, existsSync, statSync } from "node:fs";
@@ -56,7 +57,10 @@ const server = createServer((request, response) => {
   response.writeHead(200, { "Content-Type": TYPES[path.extname(file)] ?? "application/octet-stream" });
   createReadStream(file).pipe(response);
 });
-if (!process.argv[2]) await new Promise<void>((resolve) => server.listen(PORT, resolve));
+if (!process.argv[2]) {
+  execSync("npx next build", { stdio: "inherit" });
+  await new Promise<void>((resolve) => server.listen(PORT, resolve));
+}
 
 const chromePath = ["google-chrome", "chromium", "chromium-browser"]
   .map((name) => { try { return execSync(`command -v ${name}`).toString().trim(); } catch { return ""; } })
@@ -175,9 +179,11 @@ try {
   for (let i = 0; i < 200; i++) {
     await keys.pressTab();
     await sleep(60);
+    // null once focus leaves the page or comes back round to a stop already seen.
     const stop = await keys.evaluate<{ name: string; ring: boolean; visible: boolean } | null>(`(() => {
       const element = document.activeElement;
-      if (!element || element === document.body) return null;
+      if (!element || element === document.body || element.hasAttribute("data-test-visited")) return null;
+      element.setAttribute("data-test-visited", "");
       const box = element.getBoundingClientRect();
       const style = getComputedStyle(element);
       const bar = document.querySelector(".mobile-nav")?.getBoundingClientRect().top ?? innerHeight;

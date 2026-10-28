@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:mobile": "next build && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-mobile.ts",
+    "test:mobile": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-mobile.ts",
     "profile": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-profile-readme.ts",
     "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-site-images.ts",
     "cv": "bash scripts/build-cv.sh",
