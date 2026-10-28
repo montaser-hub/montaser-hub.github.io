@@ -163,6 +163,7 @@ export const experience: Experience[] = [
   {
     company: "Arkaan International Group Co.",
     role: "Full Stack Developer",
+    type: "Full-time",
     start: "Dec 2025",
     end: "Present",
     highlights: [
@@ -175,6 +176,7 @@ export const experience: Experience[] = [
   {
     company: "Qyser Tech.",
     role: "Backend Developer",
+    type: "Part-time, Remote",
     start: "Sep 2024",
     end: "Mar 2026",
     highlights: [
@@ -279,7 +281,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     name: "Trigo — Ride-Hailing Backend",
-    context: "Delivery Quote Ltd · team project",
+    context: "Delivery Quote Ltd · freelance, team project",
     role: "Backend developer",
     summary:
       "The real-time API behind a ride-hailing app: matching riders with drivers, shared rides, live driver locations, and in-app chat and calls.",

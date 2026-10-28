@@ -101,6 +101,8 @@ export type TechStack = Record<string, string[]>;
 export interface Experience {
   company: string;
   role: string;
+  /** Employment type, e.g. "Part-time, Remote". Shown with the company so overlapping dates read as intended. */
+  type?: string;
   start: string;
   end: string;
   highlights: string[];

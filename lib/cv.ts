@@ -76,7 +76,7 @@ export function buildCv(): CvDocument {
     skills: Object.entries({ ...techStack, ...cv.extraSkills }).map(([group, items]) => ({ group, items: items.join(", ") })),
     experience: experience.map((job) => ({
       title: job.role,
-      place: job.company,
+      place: job.type ? `${job.company} - ${job.type}` : job.company,
       dates: `${job.start} - ${job.end}`,
       bullets: job.highlights,
     })),

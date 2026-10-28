@@ -145,6 +145,8 @@
 
 .cv-bullet {
   display: inline-block;
+  /* Keeps the space after the bullet in the PDF's text. */
+  white-space: pre;
   width: 13pt;
   padding-left: 4pt;
   text-indent: 0;

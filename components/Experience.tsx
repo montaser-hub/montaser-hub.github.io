@@ -5,7 +5,7 @@ import { copy, experience, education } from "@/lib/data";
 
 export default function Experience() {
   return (
-    <section id="experience" className="scroll-mt-20 py-24">
+    <section id="experience" className="py-16 sm:py-24">
       <SectionHeading section="experience" />
 
       <Timeline>
@@ -22,6 +22,7 @@ export default function Experience() {
                   {job.start} — {job.end}
                 </p>
                 <p className="mt-1 text-sm font-medium text-muted">{job.company}</p>
+                {job.type && <p className="mt-0.5 text-xs text-muted-dim">{job.type}</p>}
               </div>
               <div>
                 <h3 className="text-base font-semibold text-foreground">

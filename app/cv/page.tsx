@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * Bullets are a real "•" character, not a CSS list marker: Chrome draws list
- * markers as shapes, so they never reach the PDF's text and parsers run the
- * points together.
+ * Bullets are a real "•" and a space, not a CSS list marker: Chrome draws
+ * list markers as shapes, so they never reach the PDF's text and parsers run
+ * the points together. The space keeps the marker apart from the first word.
  */
 function Entries({ entries }: { entries: CvEntry[] }) {
   return entries.map((entry) => (
@@ -29,7 +29,7 @@ function Entries({ entries }: { entries: CvEntry[] }) {
         <ul>
           {entry.bullets.map((point) => (
             <li key={point}>
-              <span className="cv-bullet">•</span>
+              <span className="cv-bullet">{"• "}</span>
               {point}
             </li>
           ))}

@@ -44,12 +44,14 @@ function entry({ title, subtitle, place, dates, text: body, bullets }: CvEntry, 
       children: [text(title, { size: 11, bold: true }), ...(subtitle ? [text(`: ${subtitle}`, { size: 11 })] : [])],
     }),
     // Dates sit on a right tab stop at the text's right edge, as on the page.
+    // A space goes before the tab so a parser that drops tabs still sees two
+    // words, not "Co.Dec 2025".
     new Paragraph({
       keepNext: true,
       tabStops: [{ type: TabStopType.RIGHT, position: TEXT_WIDTH }],
       children: [
         text(place, { color: SOFT }),
-        ...(dates ? [new TextRun({ children: [new Tab(), dates], font: FONT, size: pt(10), color: SOFT })] : []),
+        ...(dates ? [new TextRun({ children: [" ", new Tab(), dates], font: FONT, size: pt(10), color: SOFT })] : []),
       ],
     }),
     ...(bullets ?? []).map((point) => new Paragraph({ bullet: { level: 0 }, children: [text(point)] })),
